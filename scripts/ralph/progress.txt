@@ -275,3 +275,27 @@ Started: 2026-04-28T12:51:53
   - Gotcha encountered: PowerShell treats JavaScript template backticks as escapes inside `node -e`; use plain string concatenation for one-line JSON parse checks.
   - Useful context for the next iteration: US-008 should rerun final `npm run check`, `npm run smoke`, and self-scan, then inspect the accumulated diff before the final local commit.
 ---
+## 2026-04-28 18:08:47 +08:00 - US-008
+- What was implemented
+  - Completed the final review of accumulated product-quality changes against all PRD stories.
+  - Confirmed the final tracked diff only includes expected local repository changes for release readiness docs, lint/report polish, and Ralph state.
+  - Kept publishing, GitHub release creation, remote push, user-data deletion, and secret use out of scope.
+- Files changed
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm run check` passed: lint ok, typecheck ok, 23 tests passed, build passed.
+  - `npm run smoke` passed: clean fixture score 100/100, 0 findings.
+  - `node dist/cli.js scan . --out .tmp/self-scan --format markdown,json,html,sarif,annotations --min-score 0` passed: score 100/100, 0 findings.
+  - Parsed `.tmp/self-scan/report.json` successfully: score 100, grade A, 0 findings.
+  - Confirmed `.tmp/self-scan/report.html` exists as generated static HTML evidence.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found. No final fixes were needed after review.
+  - P2: ignored generated verification outputs remain in `.tmp/`, `dist/`, `.playwright-mcp/`, `node_modules/`, and fixture-local `.tmp/`; they are intentionally uncommitted.
+  - P2: `scripts/ralph/task.md` contains an unrelated Ralph prompt update for a later expanded task and is intentionally left uncommitted.
+  - Local commit hash: pending until the US-008 local commit is created.
+- Learnings for future iterations:
+  - Pattern discovered: final review should compare `git diff main..HEAD` plus current working tree status so ignored evidence and unrelated Ralph prompt updates do not enter story commits.
+  - Gotcha encountered: a commit cannot contain its own final hash without changing that hash; record the final hash in the terminal/final response after commit.
+  - Useful context for the next iteration: all PRD stories are now marked passing after verification; no push, publish, or release was performed.
+---

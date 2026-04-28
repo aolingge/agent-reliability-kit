@@ -139,8 +139,8 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": "Reuse decision: use standard git local commit workflow and existing npm verification commands. Keep release readiness as documentation and dry-run evidence only; publishing and remote operations remain out of scope unless the user explicitly asks later."
+      "passes": true,
+      "notes": "Reuse decision: use standard git local commit workflow and existing npm verification commands. Keep release readiness as documentation and dry-run evidence only; publishing and remote operations remain out of scope unless the user explicitly asks later. Final verification passed with npm run check, npm run smoke, and repository self-scan score 100 with 0 findings."
     }
   ]
 }
