@@ -1,0 +1,6 @@
+{
+  "ignore": [
+    "tests/fixtures/secret-risk/config.txt"
+  ]
+}
+

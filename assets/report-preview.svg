@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Reliability report preview</title>
+  <desc id="desc">A report dashboard preview with score and findings.</desc>
+  <rect width="960" height="540" fill="#f7f4ec"/>
+  <rect x="44" y="44" width="872" height="452" fill="#fffdf7" stroke="#181714" stroke-width="3"/>
+  <text x="80" y="112" fill="#315f9f" font-family="Consolas, monospace" font-size="18" font-weight="700">AGENT RELIABILITY REPORT</text>
+  <text x="80" y="184" fill="#181714" font-family="Georgia, serif" font-size="70" font-weight="700">94</text>
+  <text x="194" y="184" fill="#181714" font-family="Georgia, serif" font-size="34">/100 Grade A</text>
+  <rect x="80" y="232" width="170" height="92" fill="#181714"/>
+  <text x="106" y="285" fill="#f7f4ec" font-family="Consolas, monospace" font-size="24">0 P0</text>
+  <rect x="278" y="232" width="170" height="92" fill="#f5efe2" stroke="#181714" stroke-width="2"/>
+  <text x="304" y="285" fill="#181714" font-family="Consolas, monospace" font-size="24">1 P1</text>
+  <rect x="476" y="232" width="170" height="92" fill="#f5efe2" stroke="#181714" stroke-width="2"/>
+  <text x="502" y="285" fill="#181714" font-family="Consolas, monospace" font-size="24">2 P2</text>
+  <rect x="674" y="232" width="170" height="92" fill="#f5efe2" stroke="#181714" stroke-width="2"/>
+  <text x="700" y="285" fill="#181714" font-family="Consolas, monospace" font-size="24">3 P3</text>
+  <line x1="80" y1="374" x2="844" y2="374" stroke="#ded6c6" stroke-width="3"/>
+  <text x="80" y="420" fill="#b46917" font-family="Consolas, monospace" font-size="22">P1 ci.no-validation-command</text>
+  <text x="80" y="456" fill="#6c675c" font-family="Georgia, serif" font-size="22">Run tests, typecheck, and build before agents finish.</text>
+</svg>
+

@@ -1,0 +1,57 @@
+{
+  "name": "agent-reliability-kit",
+  "version": "0.1.0",
+  "description": "Verify, harden, and ship AI-agent-assisted codebases in one command.",
+  "type": "module",
+  "bin": {
+    "agent-reliability-kit": "./dist/cli.js",
+    "ark": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "assets",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "lint": "node scripts/lint.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "smoke": "node dist/cli.js scan tests/fixtures/clean-node --out .tmp/smoke --format markdown,json,html --min-score 85",
+    "demo": "node dist/cli.js scan tests/fixtures/conflicting-agent-rules --format text --min-score 0"
+  },
+  "keywords": [
+    "ai-agent",
+    "codex",
+    "claude-code",
+    "cursor",
+    "gemini-cli",
+    "developer-tools",
+    "security",
+    "ci",
+    "mcp",
+    "sarif"
+  ],
+  "author": "Aolinge",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aolingge/agent-reliability-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aolingge/agent-reliability-kit/issues"
+  },
+  "homepage": "https://github.com/aolingge/agent-reliability-kit#readme",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.2"
+  }
+}
+

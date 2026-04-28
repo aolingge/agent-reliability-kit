@@ -1,0 +1,71 @@
+import path from "node:path";
+import type { Finding, Report } from "../types.js";
+
+export function formatMarkdown(report: Report): string {
+  const facts = report.facts;
+  const commands = Array.isArray(facts.detectedCommands) ? facts.detectedCommands : [];
+  const workflows = Array.isArray(facts.workflows) ? facts.workflows : [];
+
+  const lines = [
+    "# Agent Reliability Report",
+    "",
+    `Generated: ${report.generatedAt}`,
+    "",
+    `Repository: \`${path.basename(report.root)}\``,
+    "",
+    `Score: **${report.score}/100**`,
+    "",
+    `Grade: **${report.grade}**`,
+    "",
+    "## Summary",
+    "",
+    `- Critical: ${report.summary.critical}`,
+    `- High: ${report.summary.high}`,
+    `- Medium: ${report.summary.medium}`,
+    `- Low: ${report.summary.low}`,
+    `- Info: ${report.summary.info}`,
+    "",
+    "## What The Scanner Saw",
+    "",
+    `- Agent instruction files: ${formatList(facts.agentInstructionFiles)}`,
+    `- Detected commands: ${formatList(commands)}`,
+    `- GitHub Actions workflows: ${formatList(workflows)}`,
+    ""
+  ];
+
+  if (report.findings.length === 0) {
+    lines.push("## Findings", "", "No findings. This repository is ready for agent-assisted work.");
+    return lines.join("\n");
+  }
+
+  lines.push("## Findings", "");
+  for (const finding of report.findings) {
+    lines.push(`### ${badge(finding.severity)} ${finding.title}`);
+    lines.push("");
+    lines.push(`- Rule: \`${finding.id}\``);
+    lines.push(`- Scanner: \`${finding.scanner}\``);
+    if (finding.file) lines.push(`- Location: \`${finding.file}${finding.line ? `:${finding.line}` : ""}\``);
+    if (finding.evidence) lines.push(`- Evidence: \`${finding.evidence}\``);
+    lines.push(`- Why it matters: ${finding.why}`);
+    lines.push(`- Next action: ${finding.next}`);
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+function formatList(value: unknown): string {
+  if (!Array.isArray(value) || value.length === 0) return "none";
+  return value.map((item) => `\`${String(item)}\``).join(", ");
+}
+
+function badge(severity: Finding["severity"]): string {
+  return {
+    critical: "[P0 critical]",
+    high: "[P1 high]",
+    medium: "[P2 medium]",
+    low: "[P3 low]",
+    info: "[info]"
+  }[severity];
+}
+

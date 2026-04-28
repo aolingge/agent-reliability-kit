@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+.tmp/
+.agent-reliability/
+*.log
+.env
+.env.*
+!.env.example
+

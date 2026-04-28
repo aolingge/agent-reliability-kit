@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Reliability Kit banner</title>
+  <desc id="desc">A product banner showing a repository reliability console.</desc>
+  <rect width="1200" height="520" fill="#f7f4ec"/>
+  <path d="M0 80H1200M0 160H1200M0 240H1200M0 320H1200M0 400H1200M0 480H1200M120 0V520M240 0V520M360 0V520M480 0V520M600 0V520M720 0V520M840 0V520M960 0V520M1080 0V520" stroke="#ded6c6" stroke-width="1"/>
+  <rect x="70" y="72" width="1060" height="376" fill="#fffdf7" stroke="#181714" stroke-width="3"/>
+  <rect x="70" y="72" width="1060" height="58" fill="#181714"/>
+  <circle cx="104" cy="101" r="8" fill="#d13b2f"/>
+  <circle cx="132" cy="101" r="8" fill="#b46917"/>
+  <circle cx="160" cy="101" r="8" fill="#1f7a5b"/>
+  <text x="200" y="107" fill="#f7f4ec" font-family="Consolas, monospace" font-size="22">agent-reliability-kit scan .</text>
+  <text x="98" y="200" fill="#181714" font-family="Georgia, serif" font-size="58" font-weight="700">Verify agent-assisted codebases</text>
+  <text x="98" y="252" fill="#6c675c" font-family="Georgia, serif" font-size="28">Instructions, CI, secrets, README, MCP risk, and release proof.</text>
+  <rect x="98" y="300" width="222" height="80" fill="#181714"/>
+  <text x="124" y="350" fill="#f7f4ec" font-family="Consolas, monospace" font-size="26">Score 94 / A</text>
+  <rect x="350" y="300" width="208" height="80" fill="#f5efe2" stroke="#181714" stroke-width="2"/>
+  <text x="374" y="333" fill="#181714" font-family="Consolas, monospace" font-size="20">P0 secrets</text>
+  <text x="374" y="362" fill="#1f7a5b" font-family="Consolas, monospace" font-size="20">0 found</text>
+  <rect x="588" y="300" width="208" height="80" fill="#f5efe2" stroke="#181714" stroke-width="2"/>
+  <text x="612" y="333" fill="#181714" font-family="Consolas, monospace" font-size="20">CI proof</text>
+  <text x="612" y="362" fill="#315f9f" font-family="Consolas, monospace" font-size="20">ready</text>
+  <rect x="826" y="300" width="208" height="80" fill="#f5efe2" stroke="#181714" stroke-width="2"/>
+  <text x="850" y="333" fill="#181714" font-family="Consolas, monospace" font-size="20">Agent rules</text>
+  <text x="850" y="362" fill="#315f9f" font-family="Consolas, monospace" font-size="20">clear</text>
+</svg>
+

@@ -1,0 +1,9 @@
+{
+  "name": "conflicting-agent-rules",
+  "version": "1.0.0",
+  "scripts": {
+    "check": "node -e \"console.log('ok')\"",
+    "test": "node -e \"console.log('ok')\""
+  }
+}
+
