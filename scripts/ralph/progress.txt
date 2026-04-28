@@ -219,3 +219,26 @@ Started: 2026-04-28T12:51:53
 - Remaining boundary: public GitHub repository creation, remote push, GitHub release, and `npm publish` were intentionally not performed because they are external publication actions requiring explicit user confirmation.
 - Local final commit hash: recorded in final response after commit creation; not embedded here because a commit cannot contain its own final hash.
 ---
+## 2026-04-28 17:54:00 +08:00 - US-006
+- What was implemented
+  - Reviewed CI, Dependabot, issue templates, PR template, contributing/security/changelog/license/gitignore/package metadata, release readiness docs, and package dry-run tooling against local-only release safety rules.
+  - Added an explicit credential boundary to `docs/release-readiness.md`: later optional integrations must reuse existing logged-in sessions, OpenCLI, tool-native credential stores, Cockpit Tools, or the local encrypted AI secret vault, and must not ask contributors to paste credentials into repository or progress artifacts.
+  - Marked US-006 passing in `scripts/ralph/prd.json`.
+- Files changed
+  - `docs/release-readiness.md`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm install` installed local dependencies needed for `tsc`.
+  - `npm run typecheck` passed.
+  - `npm run build` passed.
+  - `node scripts/release-dry-run.mjs` passed: `agent-reliability-kit@0.1.0`, 86 files, 244.0 KiB unpacked, required files present.
+  - `npm pack --json --dry-run` passed and showed the intended package contents without publishing.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found for US-006. CI remains read-only, runs `npm ci`, `npm run check`, and `npm run smoke`, and no workflow publishes packages, creates releases, pushes branches, or requires secrets.
+  - P2: `scripts/ralph/task.md` has a pre-existing/unrelated update from the current Ralph task prompt and is intentionally excluded from this story commit.
+- Learnings for future iterations:
+  - Pattern discovered: keep release safety boundaries in `docs/release-readiness.md` so package dry runs, CI, and community templates share the same local-only assumptions.
+  - Gotcha encountered: verification failed before `npm install` because `tsc` was unavailable; install dependencies before TypeScript checks on a fresh workspace.
+  - Useful context for the next iteration: US-007 can reuse the current build output and should avoid committing generated `.tmp` self-scan reports.
+---

@@ -38,6 +38,8 @@ node scripts/release-dry-run.mjs
 
 The dry-run script wraps `npm pack --json --dry-run`, parses the package file list, and fails if required public artifacts are missing from the tarball preview. It does not publish to npm, create tags, create GitHub releases, push branches, or read credentials.
 
+If a later optional integration needs credentials, reuse an existing logged-in browser session, OpenCLI, a tool-native credential store, Cockpit Tools, or the local encrypted AI secret vault. Do not ask contributors to paste credentials into issue templates, progress logs, docs, repository files, or dry-run output.
+
 ## Launch Surface Dry Run
 
 Before posting publicly, replace launch placeholders only after the matching public URLs exist:
