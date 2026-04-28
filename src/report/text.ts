@@ -21,8 +21,10 @@ export function formatText(report: Report): string {
   }
 
   for (const finding of report.findings.slice(0, 20)) {
-    lines.push(`${ICONS[finding.severity]} ${finding.id} ${location(finding)}`);
+    lines.push(`${ICONS[finding.severity]} ${finding.id}`);
     lines.push(`  ${finding.title}`);
+    lines.push(`  File: ${location(finding)}`);
+    lines.push(`  Reason: ${finding.why}`);
     lines.push(`  Next: ${finding.next}`);
   }
 
@@ -34,7 +36,6 @@ export function formatText(report: Report): string {
 }
 
 function location(finding: Finding): string {
-  if (!finding.file) return "";
+  if (!finding.file) return "repository";
   return finding.line ? `${finding.file}:${finding.line}` : finding.file;
 }
-

@@ -48,5 +48,14 @@ describe("initProject", () => {
     expect(result.skipped).toContain("SECURITY.md");
     expect(fs.readFileSync(path.join(temp, "SECURITY.md"), "utf8")).toBe("custom\n");
   });
-});
 
+  it("overwrites existing starter files when force is true", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-init-force-"));
+    fs.writeFileSync(path.join(temp, "SECURITY.md"), "custom\n", "utf8");
+    const result = initProject(temp, true);
+
+    expect(result.created).toContain("SECURITY.md");
+    expect(result.skipped).not.toContain("SECURITY.md");
+    expect(fs.readFileSync(path.join(temp, "SECURITY.md"), "utf8")).toContain("# Security Policy");
+  });
+});
