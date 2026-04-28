@@ -5,6 +5,7 @@
 Verify, harden, and ship AI-agent-assisted codebases in one command.
 
 [![Status](https://img.shields.io/badge/status-pre--release-315f9f.svg)](docs/release-readiness.md)
+[![CI](https://github.com/aolingge/agent-reliability-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/aolingge/agent-reliability-kit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-181714.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-315f9f.svg)](package.json)
 
@@ -12,7 +13,10 @@ Agent Reliability Kit scans a repository the way a careful maintainer would befo
 
 ## Quick Start
 
-Pre-release status: this repository is currently designed to run from source. The `npx` command below becomes the public install path after the maintainer creates the public GitHub repository and publishes the npm package.
+Pre-release status: the public repository and docs are live, and the npm package is not published yet. Run from source for now; the `npx` command below becomes the public install path after npm publication.
+
+- Source: <https://github.com/aolingge/agent-reliability-kit>
+- Docs: <https://aolingge.github.io/agent-reliability-kit/>
 
 ```bash
 npm install

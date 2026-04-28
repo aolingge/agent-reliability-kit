@@ -56,6 +56,7 @@ Then review:
 - `docs/launch/channel-rules.md`
 - `docs/launch/product-hunt.md`
 - `docs/launch/devto-article.md`
+- `docs/launch/live-links.md`
 
 For GitHub, set a concise repository description, upload `assets/social-preview.png` as the social preview, and add focused topics such as `ai-agent`, `coding-agents`, `codex`, `claude-code`, `cursor`, `gemini-cli`, `mcp`, `developer-tools`, `ci`, `sarif`, `security`, `typescript`, and `cli`.
 
@@ -72,7 +73,7 @@ The npm package preview should include at least:
 
 The package should not include `.env` files, cookies, browser profiles, private logs, local scan output, or credential material. The current `files` allowlist in `package.json` limits the package to `dist`, `docs`, `assets`, `README.md`, and `LICENSE`.
 
-The current repository is in pre-release local mode. Do not add public GitHub, issue tracker, CI badge, or npm links until the public remote exists; dead links reduce launch trust. Add `repository`, `bugs`, and `homepage` metadata in the same commit that creates the public release surface.
+The current repository is in pre-release npm mode: the public GitHub repository and documentation URL exist, and the npm package is not published yet. Keep npm install claims as pre-publication wording until the package is live. Public `repository`, `bugs`, `homepage`, and CI links are now allowed because the GitHub surface exists.
 
 ## Manual Release Boundary
 

@@ -21,6 +21,7 @@ This folder contains copy, assets, and operating rules for a careful pre-release
 - [Channel rules](channel-rules.md)
 - [Product Hunt draft](product-hunt.md)
 - [DEV article draft](devto-article.md)
+- [Live links](live-links.md)
 
 ## Replace Before Posting
 

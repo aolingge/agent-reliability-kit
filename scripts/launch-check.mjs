@@ -14,6 +14,7 @@ const requiredFiles = [
   "docs/launch/channel-rules.md",
   "docs/launch/product-hunt.md",
   "docs/launch/devto-article.md",
+  "docs/launch/live-links.md",
   "assets/social-preview.png",
   "assets/social-preview.svg",
   "assets/product-hunt-thumbnail.png",

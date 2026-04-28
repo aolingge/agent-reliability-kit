@@ -12,6 +12,7 @@ const requiredFiles = [
   "docs/examples/clean-report.md",
   "docs/launch/README.md",
   "docs/launch/channel-copy.md",
+  "docs/launch/live-links.md",
   "assets/social-preview.png",
   "assets/product-hunt-thumbnail.png"
 ];

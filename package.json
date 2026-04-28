@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "description": "Verify, harden, and ship AI-agent-assisted codebases in one command.",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aolingge/agent-reliability-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aolingge/agent-reliability-kit/issues"
+  },
+  "homepage": "https://aolingge.github.io/agent-reliability-kit/",
   "bin": {
     "agent-reliability-kit": "./dist/cli.js",
     "ark": "./dist/cli.js"
