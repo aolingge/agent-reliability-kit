@@ -1,0 +1,146 @@
+{
+  "project": "Agent Reliability Kit",
+  "branchName": "ralph/product-quality-polish",
+  "description": "Polish the local-first TypeScript CLI, reports, docs, static product page, community files, CI, examples, and release readiness into a product-quality open-source repository without publishing, deleting user data, or using secrets.",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Create baseline audit and backlog",
+      "description": "As a maintainer, I want a current baseline of repository quality, risks, and reusable assets so that later polish work starts from verified facts.",
+      "acceptanceCriteria": [
+        "Review AGENTS.md, README.md, package.json, .github workflows/templates, docs, assets, src, tests, examples, and scripts/ralph files before changing application code",
+        "Append scripts/ralph/progress.txt with the baseline inventory, current git status, local-only safety boundaries, and a P0/P1/P2 backlog",
+        "Record that CLAUDE.md is absent or document its actual content if it is later added",
+        "No secrets, tokens, cookies, browser profiles, private paths, or raw private logs are added to repository files",
+        "Typecheck passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Reuse decision: current repo already provides npm scripts, Ralph scaffolding, docs, assets, tests, and CI; start by auditing and reusing these instead of adding a new task runner or planning format. Local notes search found no existing project-specific Obsidian note for agent-reliability-kit."
+    },
+    {
+      "id": "US-002",
+      "title": "Polish CLI behavior",
+      "description": "As a CLI user, I want scan, doctor, init, help, version, output formats, paths, and failures to behave predictably so that the tool is safe and clear in local and CI runs.",
+      "acceptanceCriteria": [
+        "CLI help documents every supported command, option, alias, default output location, and local-only safety behavior",
+        "Unknown options, invalid --min-score values, invalid --format values, missing option values, and missing target paths return concise actionable errors with exit code 2",
+        "scan and doctor do not write outside the requested repository unless --out explicitly points there and the behavior is documented",
+        "init never overwrites existing files unless --force is passed, and tests cover both created and skipped files",
+        "CLI output remains concise and includes severity, file path, reason, and next action for findings",
+        "Tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": "Reuse decision: keep the existing lightweight src/cli.ts parser unless the audit proves it cannot meet the criteria; avoid adding a CLI framework dependency for this small command surface."
+    },
+    {
+      "id": "US-003",
+      "title": "Strengthen scanners and fixtures",
+      "description": "As a maintainer, I want scanner coverage for agent instructions, commands, README quality, secrets, GitHub Actions, AI tooling risk, and release readiness so that findings are trustworthy.",
+      "acceptanceCriteria": [
+        "Tests cover at least one clean repository, one conflicting-agent-instructions repository, one missing-command repository, one unsafe GitHub Actions repository, and one secret-risk repository",
+        "Secret-like fixture values are obviously synthetic and all report outputs redact token-like evidence",
+        "GitHub Actions scanner checks least-privilege permissions, risky triggers, pipe-to-shell patterns, and validation commands without requiring repository secrets",
+        "README and release-readiness checks verify install path, quick start, license, contribution path, package metadata, and expected report outputs",
+        "Each finding includes severity, file path when available, reason, and next action",
+        "Tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": "Reuse decision: extend existing scanners and fixtures in src/scanners and tests/fixtures rather than introducing an external static-analysis engine. Online prior art checked: GitHub Actions permissions docs support least-privilege checks; OpenSSF Scorecard is a mature option, but this project should first dogfood its own local scanner and only add Scorecard as optional documentation or CI guidance if needed."
+    },
+    {
+      "id": "US-004",
+      "title": "Polish generated reports",
+      "description": "As a maintainer or contributor, I want Markdown, JSON, HTML, SARIF, annotations, and text reports to be readable, redacted, and consistent so that scanner output is useful in local reviews and CI logs.",
+      "acceptanceCriteria": [
+        "Markdown, text, and annotations include severity, file path, reason, and next action for every finding",
+        "HTML report is responsive at desktop and mobile widths and does not overflow, overlap, or expose unescaped user-controlled content",
+        "SARIF output parses as JSON and includes stable rule IDs and locations where available",
+        "Generated reports for secret-risk fixtures contain [redacted] and do not contain raw synthetic token values",
+        "Verify in browser",
+        "If browser or Playwright validation hits EPERM, WinError 5, restricted token, AppData daemon, or child-process launch failures, switch once to the local no-sandbox/full-access path and do not retry the same sandboxed command repeatedly",
+        "Tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 4,
+      "passes": false,
+      "notes": "Reuse decision: keep static HTML generation in src/report/html.ts and validate the emitted file in a browser. Online prior art checked: Playwright supports full-page screenshots for static visual validation, but adding Playwright as a dependency is optional and should be justified by actual validation needs."
+    },
+    {
+      "id": "US-005",
+      "title": "Polish README, docs, examples, and product page",
+      "description": "As a new open-source user, I want the README, docs, examples, assets, and static product page to explain the value, commands, safety model, and report formats clearly so that I can try the tool locally.",
+      "acceptanceCriteria": [
+        "README quick start works from a clean checkout using npm install, npm run build, and node dist/cli.js scan .",
+        "README and docs state that scans are local-first and must not include real secrets, private logs, cookies, browser profiles, or private URLs",
+        "docs/index.html is a static product page with working local links to README, docs, examples, license, and report concepts",
+        "docs/examples/problem-report.md shows a redacted, reproducible issue template without real private data",
+        "All documented commands are either verified locally or clearly marked as post-publication examples without running publish",
+        "Verify in browser",
+        "If browser validation hits EPERM, WinError 5, restricted token, AppData daemon, or child-process launch failures, switch once to the local no-sandbox/full-access path and do not retry the same sandboxed command repeatedly",
+        "Typecheck passes"
+      ],
+      "priority": 5,
+      "passes": false,
+      "notes": "Reuse decision: npm docs recommend README content for package users, and the repo already has README.md, docs/index.html, docs/examples, and SVG assets. Improve those assets in place instead of replacing the site with a framework."
+    },
+    {
+      "id": "US-006",
+      "title": "Harden community files and CI",
+      "description": "As a maintainer, I want community files, CI, package metadata, and release checks to be safe and ready so that contributors can validate changes without publishing or using secrets.",
+      "acceptanceCriteria": [
+        ".github workflow permissions remain least-privilege and no workflow publishes packages, creates releases, pushes branches, or requires secrets",
+        "CI runs npm ci, npm run check, and npm run smoke on pull requests and main pushes",
+        "Issue templates, pull request template, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, LICENSE, .gitignore, and package metadata are reviewed for consistency with local-only safety rules",
+        "npm pack --dry-run or npm pack --json --dry-run is run locally and progress.txt records the intended package contents without publishing",
+        "If credentials are ever required for a later optional integration, implementation must reuse existing logged-in browser sessions, OpenCLI, tool-native credential stores, Cockpit Tools, or the local encrypted AI secret vault instead of asking repeatedly or writing credentials to files",
+        "Typecheck passes"
+      ],
+      "priority": 6,
+      "passes": false,
+      "notes": "Reuse decision: current CI already uses npm ci, setup-node, npm run check, npm run smoke, and contents: read. Online prior art checked: GitHub Actions docs support explicit GITHUB_TOKEN permissions; npm docs support package files/bin/README review and dry-run packlist checks. Avoid adding publish or release jobs."
+    },
+    {
+      "id": "US-007",
+      "title": "Run local verification and self scan",
+      "description": "As a maintainer, I want the repository to verify itself locally so that product-quality claims are backed by repeatable commands.",
+      "acceptanceCriteria": [
+        "npm run check passes",
+        "npm run smoke passes after build artifacts are current",
+        "A self scan is run with node dist/cli.js scan . --out .tmp/self-scan --format markdown,json,html,sarif,annotations --min-score 0",
+        ".tmp/self-scan/report.json parses as JSON and .tmp/self-scan/report.html opens as static HTML",
+        "Self-scan findings are triaged into fixed P0/P1 items and documented remaining P2 items in scripts/ralph/progress.txt",
+        "No generated .tmp reports are committed unless a story explicitly converts a sanitized sample into a fixture or doc example",
+        "Verify in browser",
+        "If browser validation hits EPERM, WinError 5, restricted token, AppData daemon, or child-process launch failures, switch once to the local no-sandbox/full-access path and do not retry the same sandboxed command repeatedly",
+        "Tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 7,
+      "passes": false,
+      "notes": "Reuse decision: dogfood the built CLI and existing smoke script before considering new validation tooling. The Build/Sale/Test/Fix flywheel is captured here by building artifacts, validating product-facing outputs, and turning self-scan failures into a prioritized backlog."
+    },
+    {
+      "id": "US-008",
+      "title": "Final review and local commit",
+      "description": "As a maintainer, I want a final review of all accumulated changes and verification evidence so that only safe local repository changes are committed.",
+      "acceptanceCriteria": [
+        "Inspect the accumulated diff or changed files and confirm every story acceptance criterion is either satisfied or documented as remaining risk",
+        "Fix all P0 and P1 issues discovered during final review before marking the story complete",
+        "Run npm run check, npm run smoke, and the self scan again after final fixes",
+        "scripts/ralph/progress.txt contains final verification commands, outcomes, remaining P2 risks, and the local commit hash",
+        "git status shows only expected local repository changes before commit and a clean or intentionally documented state after commit",
+        "Create only a local commit for the target repo changes; do not push branches, publish to npm, create GitHub releases, delete user data, or use secrets",
+        "Tests pass",
+        "Typecheck passes"
+      ],
+      "priority": 8,
+      "passes": false,
+      "notes": "Reuse decision: use standard git local commit workflow and existing npm verification commands. Keep release readiness as documentation and dry-run evidence only; publishing and remote operations remain out of scope unless the user explicitly asks later."
+    }
+  ]
+}

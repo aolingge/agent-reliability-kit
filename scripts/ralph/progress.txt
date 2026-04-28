@@ -1,0 +1,48 @@
+# Ralph Progress Log
+Started: 2026-04-28T12:51:53
+---
+
+## Codebase Patterns
+- Keep the root `AGENTS.md` authoritative for repository rules; fixture-level `AGENTS.md` and `CLAUDE.md` files under `tests/fixtures/` are scanner inputs, not active project instructions.
+- Scanner modules return `Finding` objects with `id`, `title`, `severity`, `scanner`, `why`, and `next`; include `file`, `line`, and redacted `evidence` when applicable.
+- Report formats are `text`, `markdown`, `json`, `html`, `sarif`, and `annotations`; `writeReports` writes file-backed formats and skips console-only `text`/`annotations`.
+- Generated local outputs are intentionally ignored via `.gitignore`: `dist/`, `.tmp/`, `.agent-reliability/`, logs, root Codex `progress*.md` files, and real `.env` files.
+- Do not commit Ralph local run traces such as `scripts/ralph/planner.last.txt`, `.last-branch`, or `archive/`; they may contain machine-local paths or transient logs.
+
+## 2026-04-28 12:58:39 +08:00 - US-001
+- What was implemented
+  - Completed a baseline repository audit before changing application code.
+  - Reviewed root `AGENTS.md`, `README.md`, `package.json`, `.github` workflow/templates, docs, assets, `src`, `tests`, and `scripts/ralph`.
+  - Confirmed root `CLAUDE.md` is absent; only Ralph/fixture CLAUDE files exist as task or scanner-test inputs.
+  - Confirmed root `examples/` is absent; the current example artifact is `docs/examples/problem-report.md`.
+  - Current git status before the story work: branch was created as `ralph/product-quality-polish`; `scripts/ralph/` was the only untracked bootstrap content.
+  - Local-only safety boundaries for the loop: no npm publish, no GitHub release, no push, no deletion of user data, no credentials, and no raw private logs.
+  - Baseline backlog:
+    - P0: no immediate P0 blocker found during baseline review.
+    - P1: US-002 should harden CLI parsing and error behavior for missing option values, invalid formats/scores, unknown options, path failures, help coverage, and `init --force` behavior.
+    - P1: US-003 should expand scanner/fixture coverage for missing commands, unsafe CI, secret-risk, conflicting instructions, README/release readiness, and finding metadata consistency.
+    - P2: US-004/US-005 should polish report HTML/Markdown/static docs/examples and consider whether a root `examples/` directory is needed or docs examples are enough.
+    - P2: US-006/US-007 should record package dry-run contents, self-scan findings, smoke evidence, and browser/static validation evidence before final review.
+- Files changed
+  - `.gitignore`
+  - `scripts/ralph/CODEX.md`
+  - `scripts/ralph/CLAUDE.md`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/prd.json.example`
+  - `scripts/ralph/progress.txt`
+  - `scripts/ralph/prompt.md`
+  - `scripts/ralph/ralph.sh`
+  - `scripts/ralph/task.md`
+- Verification run
+  - `npm run typecheck` passed.
+  - `git diff --cached --check` passed after whitespace cleanup.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none in this story. The story is documentation/state-only and does not change CLI behavior or scanner logic.
+  - Safety review: `scripts/ralph/planner.last.txt` contains a machine-local absolute path and is ignored rather than committed.
+  - Diff review: staged files are Ralph loop artifacts, progress/PRD state, and ignore-rule updates only; no application code changed.
+  - P2: the baseline backlog is intentionally unresolved and assigned to later PRD stories.
+- Learnings for future iterations:
+  - Pattern discovered: the project is already organized around small scanner/report/init modules, so later stories should extend those modules directly instead of adding a new framework.
+  - Gotcha encountered: `agent-reliability.config.json` ignores the synthetic secret fixture path, so self-scans can avoid flagging the intentional fixture unless a story changes that policy.
+  - Useful context for the next iteration: run focused tests around `src/cli.ts`, `src/init`, and scanner fixtures before broader `npm run check`.
+---

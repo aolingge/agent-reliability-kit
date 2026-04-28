@@ -4,7 +4,11 @@ coverage/
 .tmp/
 .agent-reliability/
 *.log
+/progress.md
+/progress-*.md
 .env
 .env.*
 !.env.example
-
+scripts/ralph/planner.last.txt
+scripts/ralph/.last-branch
+scripts/ralph/archive/
