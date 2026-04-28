@@ -242,3 +242,36 @@ Started: 2026-04-28T12:51:53
   - Gotcha encountered: verification failed before `npm install` because `tsc` was unavailable; install dependencies before TypeScript checks on a fresh workspace.
   - Useful context for the next iteration: US-007 can reuse the current build output and should avoid committing generated `.tmp` self-scan reports.
 ---
+## 2026-04-28T18:02:45 - runner-warning
+- Codex iteration 2 exited with code -1.
+- The loop will continue unless max iterations is reached.
+---
+## 2026-04-28 18:05:32 +08:00 - US-007
+- What was implemented
+  - Ran full local verification, smoke test, and repository self-scan with markdown, JSON, HTML, SARIF, and annotations output.
+  - Parsed `.tmp/self-scan/report.json` successfully and confirmed score 100 with 0 findings.
+  - Opened `.tmp/self-scan/report.html` through Playwright screenshot checks at desktop 1280x900 and mobile 390x844.
+  - Fixed a P1 verification issue where local `.playwright-mcp` browser artifacts were ignored by git but still scanned by `npm run lint`.
+  - Kept the mobile HTML report heading width polish after browser review showed it prevents overly narrow wrapping.
+- Files changed
+  - `.gitignore`
+  - `scripts/lint.mjs`
+  - `src/report/html.ts`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm run check` passed: lint ok, typecheck ok, 23 tests passed, build passed.
+  - `npm run smoke` passed: clean fixture score 100/100, 0 findings.
+  - `node dist/cli.js scan . --out .tmp/self-scan --format markdown,json,html,sarif,annotations --min-score 0` passed: score 100/100, 0 findings.
+  - `.tmp/self-scan/report.json` parsed with Node and `.tmp/self-scan/report.html` was generated.
+  - `playwright screenshot --viewport-size=1280,900 .tmp/self-scan/report.html .tmp/self-scan/report-desktop.png` passed.
+  - `playwright screenshot --viewport-size=390,844 .tmp/self-scan/report.html .tmp/self-scan/report-mobile.png` passed.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none remaining. The only P1 found was lint scanning local Playwright MCP output despite `.gitignore`; fixed by excluding `.playwright-mcp` in `scripts/lint.mjs`.
+  - P2: `.tmp/self-scan` screenshots and reports are generated evidence only and remain ignored/uncommitted.
+  - P2: `scripts/ralph/task.md` contains a pre-existing task prompt update outside this story and is intentionally not included in the US-007 commit.
+- Learnings for future iterations:
+  - Pattern discovered: keep browser-tool artifact directories aligned between `.gitignore` and `scripts/lint.mjs`.
+  - Gotcha encountered: PowerShell treats JavaScript template backticks as escapes inside `node -e`; use plain string concatenation for one-line JSON parse checks.
+  - Useful context for the next iteration: US-008 should rerun final `npm run check`, `npm run smoke`, and self-scan, then inspect the accumulated diff before the final local commit.
+---

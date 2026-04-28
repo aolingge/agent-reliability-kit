@@ -3,7 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const checkedExtensions = new Set([".ts", ".js", ".md", ".json", ".yml", ".yaml", ".html", ".svg"]);
-const ignoredDirs = new Set([".git", "node_modules", "dist", "coverage", ".tmp", ".agent-reliability"]);
+const ignoredDirs = new Set([".git", "node_modules", "dist", "coverage", ".tmp", ".playwright-mcp", ".agent-reliability"]);
 const problems = [];
 
 function walk(dir) {
@@ -32,4 +32,3 @@ if (problems.length > 0) {
 }
 
 console.log("lint: ok");
-

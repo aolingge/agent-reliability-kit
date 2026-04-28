@@ -121,8 +121,8 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": "Reuse decision: dogfood the built CLI and existing smoke script before considering new validation tooling. The Build/Sale/Test/Fix flywheel is captured here by building artifacts, validating product-facing outputs, and turning self-scan failures into a prioritized backlog."
+      "passes": true,
+      "notes": "Reuse decision: dogfood the built CLI and existing smoke script before considering new validation tooling. The Build/Sale/Test/Fix flywheel is captured here by building artifacts, validating product-facing outputs, and turning self-scan failures into a prioritized backlog. Verified npm run check, npm run smoke, self-scan markdown/json/html/sarif/annotations, JSON parsing, static HTML generation, and Playwright desktop/mobile screenshots. Fixed P1 lint exclusion for local Playwright MCP artifacts and kept mobile report heading width polish."
     },
     {
       "id": "US-008",
