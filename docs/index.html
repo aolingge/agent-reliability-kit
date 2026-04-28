@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agent Reliability Kit</title>
   <meta name="description" content="Verify, harden, and ship AI-agent-assisted codebases locally in one command.">
+  <meta property="og:title" content="Agent Reliability Kit">
+  <meta property="og:description" content="Local-first repository checks for maintainers using AI coding agents.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/social-preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent Reliability Kit">
+  <meta name="twitter:description" content="Verify, harden, and ship AI-agent-assisted codebases locally in one command.">
+  <meta name="twitter:image" content="assets/social-preview.png">
   <style>
     :root {
       --ink: #181714;
@@ -186,9 +194,8 @@
         <a href="#checks">Checks</a>
         <a href="#cli">CLI</a>
         <a href="#reports">Reports</a>
+        <a href="#launch">Launch</a>
         <a href="release-readiness.md">Release</a>
-        <a href="examples/clean-report.md">Clean</a>
-        <a href="examples/problem-report.md">Problem</a>
       </div>
     </nav>
   </header>
@@ -255,6 +262,14 @@ node dist/cli.js scan . --out .agent-reliability --format markdown,json,html</co
         <article class="card"><h3>Safety boundary</h3><p>Keep every shared report local-first, reproducible, and free of secrets, cookies, private logs, browser profiles, and private URLs.</p></article>
       </div>
     </section>
+    <section id="launch">
+      <div class="eyebrow">launch kit</div>
+      <div class="grid">
+        <article class="card"><h3>Channel copy</h3><p>Use the <a href="launch/channel-copy.md">prepared posts</a> for X, LinkedIn, GitHub discussions, Hacker News, Reddit, and maintainer outreach.</p></article>
+        <article class="card"><h3>Press kit</h3><p>Use the <a href="launch/press-kit.md">boilerplate and FAQ</a> when writing a release note, article, gallery caption, or maintainer reply.</p></article>
+        <article class="card"><h3>Rules</h3><p>Review the <a href="launch/channel-rules.md">platform guardrails</a> before posting so launch work stays useful and non-spammy.</p></article>
+      </div>
+    </section>
   </main>
   <footer>
     <main>
@@ -263,6 +278,7 @@ node dist/cli.js scan . --out .agent-reliability --format markdown,json,html</co
         <a href="why-agent-reliability.md">Why reliability</a>
         <a href="supported-tools.md">Supported tools</a>
         <a href="release-readiness.md">Release checklist</a>
+        <a href="launch/README.md">Launch kit</a>
         <a href="examples/clean-report.md">Clean report</a>
         <a href="examples/problem-report.md">Example report</a>
         <a href="#reports">Report concepts</a>

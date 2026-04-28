@@ -78,6 +78,21 @@ ark scan . --format sarif --stdout > agent-reliability.sarif
 
 The HTML report is designed for maintainers, contributors, and launch pages. It gives a score, severity counts, repository signals, and next actions for each finding.
 
+## Launch Kit
+
+The repository includes a pre-release launch kit so maintainers can prepare a public launch without inventing copy or sharing private data at the last minute.
+
+- [Launch plan](docs/launch/launch-plan.md)
+- [Channel copy](docs/launch/channel-copy.md)
+- [Demo script](docs/launch/demo-script.md)
+- [Press kit](docs/launch/press-kit.md)
+- [Community responses](docs/launch/community-responses.md)
+- [Channel rules](docs/launch/channel-rules.md)
+- [Product Hunt draft](docs/launch/product-hunt.md)
+- [DEV article draft](docs/launch/devto-article.md)
+
+Visual assets are available in `assets/`, including `social-preview.png` for GitHub/social cards and `product-hunt-thumbnail.png` for square launch surfaces.
+
 ## Product Principles
 
 - Local-first: source code and findings stay on your machine.

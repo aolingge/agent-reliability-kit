@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Reliability Kit thumbnail</title>
+  <desc id="desc">Square launch thumbnail for Agent Reliability Kit.</desc>
+  <rect width="240" height="240" fill="#f7f8fb"/>
+  <path d="M0 34H240M0 68H240M0 102H240M0 136H240M0 170H240M0 204H240M34 0V240M68 0V240M102 0V240M136 0V240M170 0V240M204 0V240" stroke="#d8dee8" stroke-width="1"/>
+  <rect x="35" y="33" width="170" height="174" fill="#fff" stroke="#181714" stroke-width="5"/>
+  <rect x="35" y="33" width="170" height="34" fill="#181714"/>
+  <circle cx="55" cy="50" r="5" fill="#b42318"/>
+  <circle cx="74" cy="50" r="5" fill="#b46917"/>
+  <circle cx="93" cy="50" r="5" fill="#1f7a5b"/>
+  <text x="120" y="121" text-anchor="middle" fill="#181714" font-family="Georgia, 'Times New Roman', serif" font-size="56" font-weight="700">ARK</text>
+  <text x="120" y="157" text-anchor="middle" fill="#315f9f" font-family="Consolas, 'SFMono-Regular', monospace" font-size="18" font-weight="800">scan .</text>
+  <text x="120" y="184" text-anchor="middle" fill="#526071" font-family="Consolas, 'SFMono-Regular', monospace" font-size="12">local-first reports</text>
+</svg>

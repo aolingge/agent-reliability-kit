@@ -9,7 +9,11 @@ const requiredFiles = [
   "LICENSE",
   "dist/cli.js",
   "docs/release-readiness.md",
-  "docs/examples/clean-report.md"
+  "docs/examples/clean-report.md",
+  "docs/launch/README.md",
+  "docs/launch/channel-copy.md",
+  "assets/social-preview.png",
+  "assets/product-hunt-thumbnail.png"
 ];
 
 const result = spawnSync("npm", ["pack", "--json", "--dry-run"], {

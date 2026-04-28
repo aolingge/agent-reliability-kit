@@ -21,7 +21,8 @@
     "lint": "node scripts/lint.mjs",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "smoke": "node dist/cli.js scan tests/fixtures/clean-node --out .tmp/smoke --format markdown,json,html --min-score 85",
-    "demo": "node dist/cli.js scan tests/fixtures/conflicting-agent-rules --format text --min-score 0"
+    "demo": "node dist/cli.js scan tests/fixtures/conflicting-agent-rules --format text --min-score 0",
+    "launch:check": "node scripts/launch-check.mjs"
   },
   "keywords": [
     "ai-agent",

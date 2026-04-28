@@ -9,7 +9,10 @@ This checklist keeps release preparation repeatable without performing a publish
 - `SECURITY.md` directs vulnerability reports away from public issues and explains safe proof-of-concept expectations.
 - `.github/pull_request_template.md` asks for verification and private-data safety confirmation.
 - `.github/ISSUE_TEMPLATE/bug_report.yml` requests reproducible, redacted bug reports.
+- `.github/ISSUE_TEMPLATE/scanner_feedback.yml` routes false positives, missing checks, unsupported stacks, and wording feedback into a launch-friendly issue flow.
 - `.github/dependabot.yml` keeps npm development dependencies and GitHub Actions updates visible through pull requests.
+- `docs/launch/` contains pre-release launch copy, a demo script, press kit, community response templates, and channel rules.
+- `assets/social-preview.png` and `assets/product-hunt-thumbnail.png` are ready for GitHub social preview and square launch surfaces.
 
 ## CI Baseline
 
@@ -34,6 +37,27 @@ node scripts/release-dry-run.mjs
 ```
 
 The dry-run script wraps `npm pack --json --dry-run`, parses the package file list, and fails if required public artifacts are missing from the tarball preview. It does not publish to npm, create tags, create GitHub releases, push branches, or read credentials.
+
+## Launch Surface Dry Run
+
+Before posting publicly, replace launch placeholders only after the matching public URLs exist:
+
+- `<PUBLIC_REPO_URL>`
+- `<NPM_PACKAGE_URL>`
+- `<DOCS_URL>`
+
+Then review:
+
+- `docs/launch/launch-plan.md`
+- `docs/launch/channel-copy.md`
+- `docs/launch/demo-script.md`
+- `docs/launch/press-kit.md`
+- `docs/launch/community-responses.md`
+- `docs/launch/channel-rules.md`
+- `docs/launch/product-hunt.md`
+- `docs/launch/devto-article.md`
+
+For GitHub, set a concise repository description, upload `assets/social-preview.png` as the social preview, and add focused topics such as `ai-agent`, `coding-agents`, `codex`, `claude-code`, `cursor`, `gemini-cli`, `mcp`, `developer-tools`, `ci`, `sarif`, `security`, `typescript`, and `cli`.
 
 ## Package Contract
 

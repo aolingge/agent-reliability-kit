@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Reliability Kit social preview</title>
+  <desc id="desc">A launch graphic for Agent Reliability Kit, a local-first CLI that verifies AI-agent-assisted repositories.</desc>
+  <defs>
+    <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M 34 0 L 0 0 0 34" fill="none" stroke="#d8dee8" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="18" dy="18" stdDeviation="0" flood-color="#c8d4e8"/>
+    </filter>
+  </defs>
+  <rect width="1280" height="640" fill="#f7f8fb"/>
+  <rect width="1280" height="640" fill="url(#grid)" opacity=".85"/>
+  <rect x="72" y="74" width="1136" height="492" rx="0" fill="#fff" stroke="#181714" stroke-width="5" filter="url(#shadow)"/>
+  <rect x="72" y="74" width="1136" height="64" fill="#181714"/>
+  <circle cx="112" cy="106" r="10" fill="#b42318"/>
+  <circle cx="146" cy="106" r="10" fill="#b46917"/>
+  <circle cx="180" cy="106" r="10" fill="#1f7a5b"/>
+  <text x="104" y="218" fill="#315f9f" font-family="Consolas, 'SFMono-Regular', monospace" font-size="25" font-weight="800">LOCAL-FIRST OSS CLI</text>
+  <text x="104" y="312" fill="#181714" font-family="Georgia, 'Times New Roman', serif" font-size="70" font-weight="700">Agent Reliability Kit</text>
+  <text x="104" y="374" fill="#526071" font-family="Georgia, 'Times New Roman', serif" font-size="31">Verify, harden, and ship AI-agent-assisted codebases.</text>
+  <g transform="translate(104 424)" font-family="Consolas, 'SFMono-Regular', monospace" font-size="24" fill="#181714">
+    <rect x="0" y="0" width="328" height="52" fill="#f7f8fb" stroke="#d8dee8" stroke-width="2"/>
+    <text x="22" y="35">ark scan .</text>
+    <rect x="352" y="0" width="218" height="52" fill="#f7f8fb" stroke="#d8dee8" stroke-width="2"/>
+    <text x="374" y="35">SARIF</text>
+    <rect x="594" y="0" width="252" height="52" fill="#f7f8fb" stroke="#d8dee8" stroke-width="2"/>
+    <text x="616" y="35">HTML report</text>
+  </g>
+  <g transform="translate(940 202)">
+    <rect x="0" y="0" width="204" height="220" fill="#f7f8fb" stroke="#181714" stroke-width="4"/>
+    <text x="102" y="83" text-anchor="middle" fill="#181714" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700">94</text>
+    <text x="102" y="122" text-anchor="middle" fill="#315f9f" font-family="Consolas, 'SFMono-Regular', monospace" font-size="22" font-weight="800">GRADE A</text>
+    <line x1="28" y1="148" x2="176" y2="148" stroke="#d8dee8" stroke-width="3"/>
+    <text x="102" y="184" text-anchor="middle" fill="#526071" font-family="Consolas, 'SFMono-Regular', monospace" font-size="17">redacted reports</text>
+  </g>
+</svg>

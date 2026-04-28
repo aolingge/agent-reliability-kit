@@ -1,0 +1,43 @@
+name: Scanner feedback
+description: Suggest a new check, report a false positive, or clarify a finding
+title: "[Feedback]: "
+labels: ["feedback", "needs-triage"]
+body:
+  - type: dropdown
+    id: feedback-type
+    attributes:
+      label: Feedback type
+      options:
+        - False positive
+        - Missing check
+        - Confusing wording
+        - Unsupported stack
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario
+      description: Describe the repository surface, scanner output, or agent workflow involved.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: What should Agent Reliability Kit report or recommend instead?
+    validations:
+      required: true
+  - type: textarea
+    id: minimal-example
+    attributes:
+      label: Minimal redacted example
+      description: Include only the smallest redacted file snippet or fixture shape needed to understand the feedback.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety confirmation
+      options:
+        - label: I removed secrets, cookies, private URLs, private logs, browser profiles, and sensitive source details.
+          required: true
