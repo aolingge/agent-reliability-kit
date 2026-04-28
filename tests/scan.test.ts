@@ -55,6 +55,16 @@ describe("scanRepository", () => {
     expect(ids).toContain("ci.no-validation-command");
   });
 
+  it("detects risky n8n workflow exports", () => {
+    const report = scanRepository(path.join(fixtures, "n8n-risk"));
+    const ids = report.findings.map((finding) => finding.id);
+    expect(ids).toContain("n8n.public-webhook");
+    expect(ids).toContain("n8n.command-execution-node");
+    expect(ids).toContain("n8n.risky-code-node");
+    expect(ids).toContain("n8n.secret-like-value");
+    expect(report.facts.n8nWorkflowFiles).toEqual(["workflows/risky.json"]);
+  });
+
   it("detects inline unsafe GitHub Actions syntax", () => {
     const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-inline-action-"));
     fs.mkdirSync(path.join(temp, ".github", "workflows"), { recursive: true });

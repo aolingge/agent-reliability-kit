@@ -103,7 +103,7 @@ export function formatHtml(report: Report): string {
       main { width: calc(100% - 24px); max-width: 1120px; padding: 24px 0 40px; }
       .hero, .facts-grid { grid-template-columns: 1fr; }
       .hero > *, .facts-grid > * { min-width: 0; }
-      h1 { font-size: 32px; line-height: 1; max-width: 8ch; }
+      h1 { font-size: 32px; line-height: 1; max-width: 12ch; }
       p { max-width: 26ch; }
       .title, .score, .finding, .empty, .facts { padding: 18px; }
       .score { min-height: 190px; }

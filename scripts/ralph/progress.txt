@@ -1,6 +1,47 @@
 # Ralph Progress Log
 Started: 2026-04-28T12:51:53
 ---
+## 2026-04-28 18:22:30 +08:00 - PRODUCT-EXPANSION
+- What was implemented
+  - Added local team audit MVP with scan history snapshots, policy checks, audit Markdown/JSON, and dry-run Slack payload generation. The command writes local files only and never calls Slack.
+  - Added private MCP registry audit with approved servers, trust score, permissions, approved commands/URLs, risk owner/reason, and token-like config checks.
+  - Added n8n workflow safety scanning to the default repository scan plus `n8n-scan` and redacted `n8n-backup` commands.
+  - Added local AI cost guard that parses JSON/JSONL trace events, summarizes provider/model token cost, and warns over budget.
+  - Updated README, product docs, comparison pages, commercial support positioning, consolidation roadmap, launch distribution checklist, demo GIF script, and a CLI demo SVG.
+  - Added focused fixtures and tests for team audit, MCP registry, n8n safety/backup, and cost guard.
+- Files changed
+  - `README.md`
+  - `package.json`
+  - `scripts/ralph/task.md`
+  - `scripts/ralph/product-expansion-prd.json`
+  - `src/cli.ts`
+  - `src/core/files.ts`
+  - `src/core/redaction.ts`
+  - `src/core/scan.ts`
+  - `src/cost/costReport.ts`
+  - `src/mcp/registry.ts`
+  - `src/n8n/backup.ts`
+  - `src/scanners/n8n.ts`
+  - `src/team/teamAudit.ts`
+  - `tests/cli.test.ts`
+  - `tests/scan.test.ts`
+  - new docs under `docs/`
+  - new fixtures under `tests/fixtures/`
+- Verification run
+  - `npm run check` passed: lint ok, typecheck ok, 28 tests passed, build passed.
+  - `npm run smoke` passed.
+  - `node dist/cli.js team-audit tests/fixtures/clean-node --out .tmp/team-smoke` passed.
+  - `node dist/cli.js mcp-registry tests/fixtures/mcp-registry --out .tmp/mcp-smoke` returned expected exit 1 with intentional fixture findings.
+  - `node dist/cli.js n8n-scan tests/fixtures/n8n-risk --out .tmp/n8n-smoke --format markdown,json --min-score 0` returned expected exit 1 with intentional critical fixture findings.
+  - `node dist/cli.js n8n-backup tests/fixtures/n8n-risk --backup-dir .tmp/n8n-backup-smoke` passed and wrote a redacted backup.
+  - `node dist/cli.js cost-report tests/fixtures/cost-trace --budget-usd 0.50 --out .tmp/cost-smoke` returned expected exit 1 with an intentional budget alert.
+- Boundaries kept
+  - No npm publish, GitHub release, remote push, real Slack webhook call, paid account action, or real secret use.
+  - Generated `.tmp` smoke outputs were removed after verification.
+- Remaining P2 risks
+  - The hosted dashboard, real Slack delivery, and SaaS billing layer are intentionally not implemented yet; this iteration creates the local MVP and launch/commercial path.
+  - Nested subcommands such as `ark mcp doctor` and `ark pr verify` are captured in the consolidation roadmap; this iteration uses flat CLI commands to keep the parser small and tested.
+---
 
 ## Codebase Patterns
 - Keep the root `AGENTS.md` authoritative for repository rules; fixture-level `AGENTS.md` and `CLAUDE.md` files under `tests/fixtures/` are scanner inputs, not active project instructions.
@@ -218,4 +259,84 @@ Started: 2026-04-28T12:51:53
   - `git diff --check`: passed with only Windows CRLF conversion warnings.
 - Remaining boundary: public GitHub repository creation, remote push, GitHub release, and `npm publish` were intentionally not performed because they are external publication actions requiring explicit user confirmation.
 - Local final commit hash: recorded in final response after commit creation; not embedded here because a commit cannot contain its own final hash.
+---
+## 2026-04-28 17:54:00 +08:00 - US-006
+- What was implemented
+  - Reviewed CI, Dependabot, issue templates, PR template, contributing/security/changelog/license/gitignore/package metadata, release readiness docs, and package dry-run tooling against local-only release safety rules.
+  - Added an explicit credential boundary to `docs/release-readiness.md`: later optional integrations must reuse existing logged-in sessions, OpenCLI, tool-native credential stores, Cockpit Tools, or the local encrypted AI secret vault, and must not ask contributors to paste credentials into repository or progress artifacts.
+  - Marked US-006 passing in `scripts/ralph/prd.json`.
+- Files changed
+  - `docs/release-readiness.md`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm install` installed local dependencies needed for `tsc`.
+  - `npm run typecheck` passed.
+  - `npm run build` passed.
+  - `node scripts/release-dry-run.mjs` passed: `agent-reliability-kit@0.1.0`, 86 files, 244.0 KiB unpacked, required files present.
+  - `npm pack --json --dry-run` passed and showed the intended package contents without publishing.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found for US-006. CI remains read-only, runs `npm ci`, `npm run check`, and `npm run smoke`, and no workflow publishes packages, creates releases, pushes branches, or requires secrets.
+  - P2: `scripts/ralph/task.md` has a pre-existing/unrelated update from the current Ralph task prompt and is intentionally excluded from this story commit.
+- Learnings for future iterations:
+  - Pattern discovered: keep release safety boundaries in `docs/release-readiness.md` so package dry runs, CI, and community templates share the same local-only assumptions.
+  - Gotcha encountered: verification failed before `npm install` because `tsc` was unavailable; install dependencies before TypeScript checks on a fresh workspace.
+  - Useful context for the next iteration: US-007 can reuse the current build output and should avoid committing generated `.tmp` self-scan reports.
+---
+## 2026-04-28T18:02:45 - runner-warning
+- Codex iteration 2 exited with code -1.
+- The loop will continue unless max iterations is reached.
+---
+## 2026-04-28 18:05:32 +08:00 - US-007
+- What was implemented
+  - Ran full local verification, smoke test, and repository self-scan with markdown, JSON, HTML, SARIF, and annotations output.
+  - Parsed `.tmp/self-scan/report.json` successfully and confirmed score 100 with 0 findings.
+  - Opened `.tmp/self-scan/report.html` through Playwright screenshot checks at desktop 1280x900 and mobile 390x844.
+  - Fixed a P1 verification issue where local `.playwright-mcp` browser artifacts were ignored by git but still scanned by `npm run lint`.
+  - Kept the mobile HTML report heading width polish after browser review showed it prevents overly narrow wrapping.
+- Files changed
+  - `.gitignore`
+  - `scripts/lint.mjs`
+  - `src/report/html.ts`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm run check` passed: lint ok, typecheck ok, 23 tests passed, build passed.
+  - `npm run smoke` passed: clean fixture score 100/100, 0 findings.
+  - `node dist/cli.js scan . --out .tmp/self-scan --format markdown,json,html,sarif,annotations --min-score 0` passed: score 100/100, 0 findings.
+  - `.tmp/self-scan/report.json` parsed with Node and `.tmp/self-scan/report.html` was generated.
+  - `playwright screenshot --viewport-size=1280,900 .tmp/self-scan/report.html .tmp/self-scan/report-desktop.png` passed.
+  - `playwright screenshot --viewport-size=390,844 .tmp/self-scan/report.html .tmp/self-scan/report-mobile.png` passed.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none remaining. The only P1 found was lint scanning local Playwright MCP output despite `.gitignore`; fixed by excluding `.playwright-mcp` in `scripts/lint.mjs`.
+  - P2: `.tmp/self-scan` screenshots and reports are generated evidence only and remain ignored/uncommitted.
+  - P2: `scripts/ralph/task.md` contains a pre-existing task prompt update outside this story and is intentionally not included in the US-007 commit.
+- Learnings for future iterations:
+  - Pattern discovered: keep browser-tool artifact directories aligned between `.gitignore` and `scripts/lint.mjs`.
+  - Gotcha encountered: PowerShell treats JavaScript template backticks as escapes inside `node -e`; use plain string concatenation for one-line JSON parse checks.
+  - Useful context for the next iteration: US-008 should rerun final `npm run check`, `npm run smoke`, and self-scan, then inspect the accumulated diff before the final local commit.
+---
+## 2026-04-28 18:08:47 +08:00 - US-008
+- What was implemented
+  - Completed the final review of accumulated product-quality changes against all PRD stories.
+  - Confirmed the final tracked diff only includes expected local repository changes for release readiness docs, lint/report polish, and Ralph state.
+  - Kept publishing, GitHub release creation, remote push, user-data deletion, and secret use out of scope.
+- Files changed
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm run check` passed: lint ok, typecheck ok, 23 tests passed, build passed.
+  - `npm run smoke` passed: clean fixture score 100/100, 0 findings.
+  - `node dist/cli.js scan . --out .tmp/self-scan --format markdown,json,html,sarif,annotations --min-score 0` passed: score 100/100, 0 findings.
+  - Parsed `.tmp/self-scan/report.json` successfully: score 100, grade A, 0 findings.
+  - Confirmed `.tmp/self-scan/report.html` exists as generated static HTML evidence.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found. No final fixes were needed after review.
+  - P2: ignored generated verification outputs remain in `.tmp/`, `dist/`, `.playwright-mcp/`, `node_modules/`, and fixture-local `.tmp/`; they are intentionally uncommitted.
+  - P2: `scripts/ralph/task.md` contains an unrelated Ralph prompt update for a later expanded task and is intentionally left uncommitted.
+  - Local commit hash: pending until the US-008 local commit is created.
+- Learnings for future iterations:
+  - Pattern discovered: final review should compare `git diff main..HEAD` plus current working tree status so ignored evidence and unrelated Ralph prompt updates do not enter story commits.
+  - Gotcha encountered: a commit cannot contain its own final hash without changing that hash; record the final hash in the terminal/final response after commit.
+  - Useful context for the next iteration: all PRD stories are now marked passing after verification; no push, publish, or release was performed.
 ---

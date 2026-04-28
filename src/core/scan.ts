@@ -6,6 +6,7 @@ import { scanAgentInstructions } from "../scanners/agentInstructions.js";
 import { scanAiAgentRisk } from "../scanners/aiAgentRisk.js";
 import { scanCommands } from "../scanners/commands.js";
 import { scanGithubActions } from "../scanners/githubActions.js";
+import { scanN8nWorkflows } from "../scanners/n8n.js";
 import { scanReadme } from "../scanners/readme.js";
 import { scanReleaseReadiness } from "../scanners/releaseReadiness.js";
 import { scanSecrets } from "../scanners/secrets.js";
@@ -20,7 +21,8 @@ const scanners = [
   scanReleaseReadiness,
   scanSecrets,
   scanGithubActions,
-  scanAiAgentRisk
+  scanAiAgentRisk,
+  scanN8nWorkflows
 ];
 
 export function scanRepository(inputRoot: string): Report {

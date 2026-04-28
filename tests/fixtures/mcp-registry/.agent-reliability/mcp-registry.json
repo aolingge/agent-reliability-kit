@@ -1,0 +1,20 @@
+{
+  "servers": [
+    {
+      "name": "filesystem",
+      "approved": true,
+      "trustScore": 90,
+      "permissions": ["filesystem"],
+      "allowedCommands": ["node"],
+      "riskOwner": "platform",
+      "riskReason": "Read-only fixture server for local examples."
+    },
+    {
+      "name": "browser",
+      "approved": false,
+      "trustScore": 45,
+      "permissions": ["browser", "network"],
+      "allowedUrls": ["https://approved.example/mcp"]
+    }
+  ]
+}

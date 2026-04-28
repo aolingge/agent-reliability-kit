@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "node",
+      "args": ["server.js"],
+      "env": {
+        "ROOT": "."
+      }
+    },
+    "browser": {
+      "url": "https://unapproved.example/mcp"
+    },
+    "unknown-remote": {
+      "url": "https://unknown.example/mcp"
+    }
+  }
+}

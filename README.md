@@ -9,7 +9,9 @@ Verify, harden, and ship AI-agent-assisted codebases in one command.
 [![License: MIT](https://img.shields.io/badge/license-MIT-181714.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-315f9f.svg)](package.json)
 
-Agent Reliability Kit scans a repository the way a careful maintainer would before letting AI coding agents work there: agent instructions, verification commands, README quality, secret hygiene, GitHub Actions safety, MCP/tooling risk, and release readiness.
+Agent Reliability Kit scans a repository the way a careful maintainer would before letting AI coding agents work there: agent instructions, verification commands, README quality, secret hygiene, GitHub Actions safety, MCP/tooling risk, n8n workflow exports, team policy, and release readiness.
+
+The flagship path is simple: keep `agent-secret-guard` as the sharp security wedge, and use `agent-reliability-kit` as the one command center for agent-era repository reliability.
 
 ## Quick Start
 
@@ -28,6 +30,16 @@ After npm publication:
 
 ```bash
 npx agent-reliability-kit scan .
+```
+
+Optional focused checks:
+
+```bash
+ark team-audit . --out .agent-reliability/team
+ark mcp-registry . --registry .agent-reliability/mcp-registry.json
+ark n8n-scan . --out .agent-reliability/n8n
+ark n8n-backup . --backup-dir .agent-reliability/n8n-backup
+ark cost-report . --trace .agent-reliability/traces --budget-usd 10
 ```
 
 The scan writes:
@@ -52,6 +64,10 @@ AI coding agents fail most often on the unglamorous parts: missing repo rules, u
 | Secrets | token-like values, tracked `.env` files, redacted evidence |
 | GitHub Actions | validation commands, explicit permissions, risky triggers, pipe-to-shell |
 | AI tooling | MCP command configs and prompt-injection-like instruction files |
+| MCP registry | private allowlist, trust score, approved commands/URLs, risk owner |
+| n8n | public webhooks, command nodes, risky code nodes, workflow secrets, redacted backups |
+| Team layer | scan history, policy gates, audit report, dry-run Slack payload |
+| Cost guard | local trace token/cost summary and budget alerts |
 
 ## CLI
 
@@ -59,6 +75,11 @@ AI coding agents fail most often on the unglamorous parts: missing repo rules, u
 agent-reliability-kit scan [path]
 agent-reliability-kit doctor [path]
 agent-reliability-kit init [path]
+agent-reliability-kit team-audit [path]
+agent-reliability-kit mcp-registry [path]
+agent-reliability-kit n8n-scan [path]
+agent-reliability-kit n8n-backup [path]
+agent-reliability-kit cost-report [path]
 ```
 
 Examples:
@@ -68,6 +89,10 @@ ark scan . --min-score 85
 ark scan . --format sarif --stdout > agent-reliability.sarif
 ark doctor .
 ark init .
+ark team-audit .
+ark mcp-registry .
+ark n8n-scan .
+ark cost-report . --budget-usd 10
 ```
 
 Machine-readable stdout stays clean for CI:
@@ -82,6 +107,22 @@ ark scan . --format sarif --stdout > agent-reliability.sarif
 
 The HTML report is designed for maintainers, contributors, and launch pages. It gives a score, severity counts, repository signals, and next actions for each finding.
 
+## Product Modules
+
+- [Team audit layer](docs/team-layer.md): scan history, policy checks, audit report, and local Slack payload.
+- [Private MCP registry](docs/private-mcp-registry.md): team allowlist with trust score, approved commands/URLs, permissions, owner, and reason.
+- [n8n safety and backup](docs/n8n-safety-backup.md): risky workflow scanning and redacted Git-friendly backups.
+- [AI cost guard](docs/ai-cost-guard.md): local trace cost summaries and budget alerts.
+- [Commercial support path](docs/commercial-support.md): open-source boundary and future paid team features.
+- [Consolidation roadmap](docs/roadmap-consolidation.md): how small tools roll into the flagship CLI.
+
+![CLI demo](assets/cli-demo.svg)
+
+## Comparisons
+
+- [agent-secret-guard vs gitleaks](docs/comparisons/agent-secret-guard-vs-gitleaks.md)
+- [Agent Reliability Kit vs generic linters](docs/comparisons/agent-reliability-kit-vs-generic-linters.md)
+
 ## Launch Kit
 
 The repository includes a pre-release launch kit so maintainers can prepare a public launch without inventing copy or sharing private data at the last minute.
@@ -92,6 +133,8 @@ The repository includes a pre-release launch kit so maintainers can prepare a pu
 - [Press kit](docs/launch/press-kit.md)
 - [Community responses](docs/launch/community-responses.md)
 - [Channel rules](docs/launch/channel-rules.md)
+- [Distribution checklist](docs/launch/distribution-checklist.md)
+- [Demo GIF script](docs/launch/demo-gif-script.md)
 - [Product Hunt draft](docs/launch/product-hunt.md)
 - [DEV article draft](docs/launch/devto-article.md)
 
@@ -133,9 +176,10 @@ assets/
 ## Roadmap
 
 - v0.1: CLI scan, doctor, init, Markdown/JSON/HTML/SARIF reports.
-- v0.2: richer language detection, monorepo command graph, and config file support.
-- v0.3: GitHub Action wrapper and dogfood gallery.
-- v0.4: compatibility matrix for Codex, Claude Code, Cursor, Gemini CLI, and OpenCode.
+- v0.2: team audit, private MCP registry, n8n safety/backup, and local cost guard.
+- v0.3: GitHub Action wrapper, dogfood gallery, and `agent-secret-guard` rule-pack consolidation.
+- v0.4: hosted team dashboard prototype, org policy packs, and private MCP approval workflow.
+- v0.5: `pr verify`, `trace run`, and compatibility matrix for Codex, Claude Code, Cursor, Gemini CLI, and OpenCode.
 
 ## Security
 

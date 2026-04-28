@@ -10,6 +10,7 @@ const SKIP_DIRS = new Set([
   "dist",
   "build",
   "coverage",
+  ".tmp",
   ".next",
   ".turbo",
   ".venv",
@@ -118,4 +119,3 @@ export function findFiles(files: RepoFile[], matcher: RegExp): RepoFile[] {
 export function lineNumber(text: string, index: number): number {
   return text.slice(0, index).split("\n").length;
 }
-

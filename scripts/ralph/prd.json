@@ -101,8 +101,8 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": "Reuse decision: current CI already uses npm ci, setup-node, npm run check, npm run smoke, and contents: read. Online prior art checked: GitHub Actions docs support explicit GITHUB_TOKEN permissions; npm docs support package files/bin/README review and dry-run packlist checks. Avoid adding publish or release jobs."
+      "passes": true,
+      "notes": "Reuse decision: current CI already uses npm ci, setup-node, npm run check, npm run smoke, and contents: read. Online prior art checked: GitHub Actions docs support explicit GITHUB_TOKEN permissions; npm docs support package files/bin/README review and dry-run packlist checks. Avoid adding publish or release jobs. Verified release dry run locally with 86 intended package files and required files present; credential reuse boundary documented in docs/release-readiness.md."
     },
     {
       "id": "US-007",
@@ -121,8 +121,8 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": "Reuse decision: dogfood the built CLI and existing smoke script before considering new validation tooling. The Build/Sale/Test/Fix flywheel is captured here by building artifacts, validating product-facing outputs, and turning self-scan failures into a prioritized backlog."
+      "passes": true,
+      "notes": "Reuse decision: dogfood the built CLI and existing smoke script before considering new validation tooling. The Build/Sale/Test/Fix flywheel is captured here by building artifacts, validating product-facing outputs, and turning self-scan failures into a prioritized backlog. Verified npm run check, npm run smoke, self-scan markdown/json/html/sarif/annotations, JSON parsing, static HTML generation, and Playwright desktop/mobile screenshots. Fixed P1 lint exclusion for local Playwright MCP artifacts and kept mobile report heading width polish."
     },
     {
       "id": "US-008",
@@ -139,8 +139,8 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": "Reuse decision: use standard git local commit workflow and existing npm verification commands. Keep release readiness as documentation and dry-run evidence only; publishing and remote operations remain out of scope unless the user explicitly asks later."
+      "passes": true,
+      "notes": "Reuse decision: use standard git local commit workflow and existing npm verification commands. Keep release readiness as documentation and dry-run evidence only; publishing and remote operations remain out of scope unless the user explicitly asks later. Final verification passed with npm run check, npm run smoke, and repository self-scan score 100 with 0 findings."
     }
   ]
 }

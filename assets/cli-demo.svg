@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Agent Reliability Kit CLI demo</title>
+  <desc id="desc">Terminal preview showing scan, MCP registry, n8n safety, and AI cost guard commands.</desc>
+  <rect width="960" height="540" rx="18" fill="#101418"/>
+  <rect x="32" y="32" width="896" height="476" rx="12" fill="#151b21" stroke="#2d3844"/>
+  <circle cx="62" cy="58" r="7" fill="#ef6f6c"/>
+  <circle cx="86" cy="58" r="7" fill="#f2c94c"/>
+  <circle cx="110" cy="58" r="7" fill="#5bc18a"/>
+  <text x="48" y="112" fill="#d8e2ec" font-family="Consolas, monospace" font-size="24">$ ark scan . --min-score 85</text>
+  <text x="48" y="156" fill="#79d0b8" font-family="Consolas, monospace" font-size="22">Score 92/100 - reports written to .agent-reliability</text>
+  <text x="48" y="214" fill="#d8e2ec" font-family="Consolas, monospace" font-size="24">$ ark mcp-registry .</text>
+  <text x="48" y="258" fill="#f2c94c" font-family="Consolas, monospace" font-size="22">MCP registry audit FAIL: 2 findings</text>
+  <text x="48" y="316" fill="#d8e2ec" font-family="Consolas, monospace" font-size="24">$ ark n8n-scan workflows --format text --stdout</text>
+  <text x="48" y="360" fill="#ef9a9a" font-family="Consolas, monospace" font-size="22">CRIT n8n workflow can execute commands</text>
+  <text x="48" y="418" fill="#d8e2ec" font-family="Consolas, monospace" font-size="24">$ ark cost-report . --budget-usd 10</text>
+  <text x="48" y="462" fill="#79d0b8" font-family="Consolas, monospace" font-size="22">AI Cost Guard: 48 calls, $7.2400, no alerts</text>
+</svg>

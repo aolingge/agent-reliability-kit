@@ -2,6 +2,7 @@ node_modules/
 dist/
 coverage/
 .tmp/
+.playwright-mcp/
 .agent-reliability/
 *.log
 /progress.md
