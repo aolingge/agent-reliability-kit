@@ -26,7 +26,6 @@ export function scanReleaseReadiness(context: ScanContext): ScannerResult {
       packageName = parsed.name;
       packageVersion = parsed.version;
       const missing: string[] = REQUIRED_PACKAGE_FIELDS.filter((field) => !hasNonEmptyString(parsed[field]));
-      if (!hasPackageLink(parsed)) missing.push("repository");
       if (missing.length > 0) {
         findings.push({
           id: "release.package-metadata-incomplete",
@@ -83,8 +82,4 @@ export function scanReleaseReadiness(context: ScanContext): ScannerResult {
 
 function hasNonEmptyString(value: unknown): boolean {
   return typeof value === "string" && value.trim().length > 0;
-}
-
-function hasPackageLink(parsed: Record<string, unknown>): boolean {
-  return Boolean(parsed.repository || parsed.homepage || parsed.bugs);
 }

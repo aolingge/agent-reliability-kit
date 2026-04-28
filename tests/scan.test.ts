@@ -55,6 +55,38 @@ describe("scanRepository", () => {
     expect(ids).toContain("ci.no-validation-command");
   });
 
+  it("detects inline unsafe GitHub Actions syntax", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-inline-action-"));
+    fs.mkdirSync(path.join(temp, ".github", "workflows"), { recursive: true });
+    fs.writeFileSync(path.join(temp, "README.md"), "# Inline Action Fixture\n", "utf8");
+    fs.writeFileSync(path.join(temp, "package.json"), JSON.stringify({
+      name: "inline-action-fixture",
+      version: "1.0.0",
+      description: "fixture",
+      license: "MIT",
+      scripts: {
+        check: "node -e \"console.log('ok')\"",
+        test: "node -e \"console.log('ok')\""
+      }
+    }, null, 2), "utf8");
+    fs.writeFileSync(path.join(temp, ".github", "workflows", "inline.yml"), [
+      "name: inline-danger",
+      "on: [pull_request_target]",
+      "permissions: { contents: write }",
+      "jobs:",
+      "  test:",
+      "    runs-on: ubuntu-latest",
+      "    steps:",
+      "      - run: npm run check",
+      ""
+    ].join("\n"), "utf8");
+
+    const report = scanRepository(temp);
+    const ids = report.findings.map((finding) => finding.id);
+    expect(ids).toContain("ci.pull-request-target");
+    expect(ids).toContain("ci.permissions-too-broad");
+  });
+
   it("checks README and release-readiness signals", () => {
     const report = scanRepository(path.join(fixtures, "missing-commands"));
     const ids = report.findings.map((finding) => finding.id);

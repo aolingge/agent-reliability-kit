@@ -4,13 +4,15 @@
 
 Verify, harden, and ship AI-agent-assisted codebases in one command.
 
-[![CI](https://github.com/aolingge/agent-reliability-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/aolingge/agent-reliability-kit/actions/workflows/ci.yml)
+[![Status](https://img.shields.io/badge/status-pre--release-315f9f.svg)](docs/release-readiness.md)
 [![License: MIT](https://img.shields.io/badge/license-MIT-181714.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-315f9f.svg)](package.json)
 
 Agent Reliability Kit scans a repository the way a careful maintainer would before letting AI coding agents work there: agent instructions, verification commands, README quality, secret hygiene, GitHub Actions safety, MCP/tooling risk, and release readiness.
 
 ## Quick Start
+
+Pre-release status: this repository is currently designed to run from source. The `npx` command below becomes the public install path after the maintainer creates the public GitHub repository and publishes the npm package.
 
 ```bash
 npm install
@@ -62,6 +64,12 @@ ark scan . --min-score 85
 ark scan . --format sarif --stdout > agent-reliability.sarif
 ark doctor .
 ark init .
+```
+
+Machine-readable stdout stays clean for CI:
+
+```bash
+ark scan . --format sarif --stdout > agent-reliability.sarif
 ```
 
 ## Report Preview

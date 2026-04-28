@@ -185,3 +185,37 @@ Started: 2026-04-28T12:51:53
   - Gotcha encountered: Playwright found mobile overflow in the inline CLI command; `pre code { white-space: pre-wrap; overflow-wrap: anywhere; }` fixed it without adding JavaScript.
   - Useful context for the next iteration: US-006 can reuse the verified local-first safety language and should avoid committing generated `.agent-reliability/` or `.tmp/` reports.
 ---
+## 2026-04-28T13:58:39 - max-iterations-reached
+- Reached max iterations: 5.
+- The runner did not receive the COMPLETE promise.
+- Incomplete stories or follow-up checks:
+- US-006: Harden community files and CI
+- US-007: Run local verification and self scan
+- US-008: Final review and local commit
+- Next action: rerun the loop after inspecting the blockers above, or split blocked stories into smaller acceptance criteria.
+---
+
+## 2026-04-28T14:06:00+08:00 - subagent-c-us-006-release-prep
+- Completed low-risk US-006 release/community preparation only; no npm publish, GitHub release, push, tag, credential write, or data deletion was performed.
+- Added Dependabot coverage for npm development dependencies and GitHub Actions.
+- Added release readiness docs, clean report example docs, and `scripts/release-dry-run.mjs` to wrap and validate `npm pack --json --dry-run`.
+- Verification passed: `npm run check`, `npm run smoke`, `node scripts/release-dry-run.mjs`, and direct `npm pack --json --dry-run`.
+---
+
+## 2026-04-28T14:26:00+08:00 - final-integration
+- Integrated reviewer subagent findings and release-prep worker output.
+- Fixed P1: `--stdout` for JSON/SARIF now emits pure machine-readable output without appended report-location text; added CLI tests for parseable JSON/SARIF stdout.
+- Fixed P1: GitHub Actions scanner now detects inline `on: [pull_request_target]` and inline write permissions such as `permissions: { contents: write }`; added scanner coverage for inline unsafe workflow syntax.
+- Fixed P1/P2 product polish: removed dead public GitHub/CI links while the repo is still local pre-release, converted docs page links to docs-root-safe paths, added release/clean report links, tightened mobile landing/report layouts, and changed no-finding language to avoid overclaiming beyond checked surfaces.
+- Final verification passed:
+  - `npm run check`: lint ok, typecheck ok, 23 tests passed, build passed.
+  - `npm run smoke`: clean fixture score 100/100, 0 findings.
+  - `node dist/cli.js scan . --out .tmp/self-scan-final --format markdown,json,html,sarif --min-score 80`: score 100/100, 0 findings.
+  - `node scripts/release-dry-run.mjs`: package dry run ok, 71 files, required files present.
+  - `node dist/cli.js scan tests/fixtures/unsafe-action --format sarif --stdout --min-score 0 > .tmp/unsafe-action.sarif` then JSON.parse: passed.
+  - docs-root static link check: 12 links, 0 bad.
+  - Chrome headless screenshots generated for final desktop/mobile docs and report pages; mobile report and mobile docs were visually reviewed.
+  - `git diff --check`: passed with only Windows CRLF conversion warnings.
+- Remaining boundary: public GitHub repository creation, remote push, GitHub release, and `npm publish` were intentionally not performed because they are external publication actions requiring explicit user confirmation.
+- Local final commit hash: recorded in final response after commit creation; not embedded here because a commit cannot contain its own final hash.
+---

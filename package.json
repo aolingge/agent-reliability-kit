@@ -37,14 +37,6 @@
   ],
   "author": "Aolinge",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aolingge/agent-reliability-kit.git"
-  },
-  "bugs": {
-    "url": "https://github.com/aolingge/agent-reliability-kit/issues"
-  },
-  "homepage": "https://github.com/aolingge/agent-reliability-kit#readme",
   "engines": {
     "node": ">=20"
   },
@@ -54,4 +46,3 @@
     "vitest": "^3.1.2"
   }
 }
-

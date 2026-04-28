@@ -2,7 +2,7 @@ import type { Finding, Report } from "../types.js";
 
 export function formatHtml(report: Report): string {
   const findingCards = report.findings.length === 0
-    ? `<section class="empty"><h2>No findings</h2><p>This repository is ready for agent-assisted work.</p></section>`
+    ? `<section class="empty"><h2>No findings</h2><p>No findings across checked surfaces. Review project-specific risks before release.</p></section>`
     : report.findings.map(formatFindingCard).join("\n");
 
   return `<!doctype html>
@@ -42,7 +42,7 @@ export function formatHtml(report: Report): string {
     main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 44px 0 64px; }
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr);
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 28px;
       align-items: stretch;
       margin-bottom: 24px;
@@ -62,7 +62,7 @@ export function formatHtml(report: Report): string {
       color: var(--blue);
       font-weight: 800;
     }
-    h1 { font-size: 58px; line-height: .95; margin: 18px 0; letter-spacing: 0; overflow-wrap: anywhere; }
+    h1 { font-size: 58px; line-height: .95; margin: 18px 0; letter-spacing: 0; max-width: 12ch; overflow-wrap: anywhere; word-break: normal; }
     h2 { margin: 0 0 12px; font-size: 22px; overflow-wrap: anywhere; }
     p { color: var(--muted); font-size: 16px; line-height: 1.55; overflow-wrap: anywhere; }
     .score { padding: 30px; display: grid; align-content: space-between; min-height: 280px; }
@@ -100,13 +100,15 @@ export function formatHtml(report: Report): string {
     code { font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; overflow-wrap: anywhere; }
     .empty { padding: 28px; }
     @media (max-width: 820px) {
-      main { width: min(100% - 24px, 1120px); padding: 24px 0 40px; }
+      main { width: calc(100% - 24px); max-width: 1120px; padding: 24px 0 40px; }
       .hero, .facts-grid { grid-template-columns: 1fr; }
       .hero > *, .facts-grid > * { min-width: 0; }
-      h1 { font-size: 34px; line-height: 1; }
+      h1 { font-size: 32px; line-height: 1; max-width: 8ch; }
+      p { max-width: 26ch; }
       .title, .score, .finding, .empty, .facts { padding: 18px; }
       .score { min-height: 190px; }
       .score-number { font-size: 72px; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
   </style>
 </head>

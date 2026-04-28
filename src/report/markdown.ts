@@ -34,7 +34,7 @@ export function formatMarkdown(report: Report): string {
   ];
 
   if (report.findings.length === 0) {
-    lines.push("## Findings", "", "No findings. This repository is ready for agent-assisted work.");
+    lines.push("## Findings", "", "No findings across checked surfaces. Review project-specific risks before release.");
     return lines.join("\n");
   }
 

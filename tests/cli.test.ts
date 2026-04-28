@@ -89,4 +89,15 @@ describe("runCli", () => {
     expect(output).toContain("Reason:");
     expect(output).toContain("Next:");
   });
+
+  it.each(["json", "sarif"])("keeps %s stdout machine-readable", (format) => {
+    const repo = createFixtureCopy("clean-node");
+    const capture = createCapture();
+    const code = runCli(["scan", repo, "--format", format, "--stdout", "--min-score", "0"], capture.io);
+    const output = capture.stdout.join("\n");
+
+    expect(code).toBe(0);
+    expect(() => JSON.parse(output)).not.toThrow();
+    expect(output).not.toContain("Written reports:");
+  });
 });

@@ -168,7 +168,7 @@ function runScan(options: ScanOptions, io: CliIo): number {
   const written = writeReports(report, outDir, options.formats);
   const printable = options.stdout ? options.formats[0] ?? "text" : "text";
   io.stdout(renderReport(report, printable));
-  if (written.length > 0) {
+  if (!options.stdout && written.length > 0) {
     io.stdout("");
     io.stdout("Written reports:");
     for (const file of written) io.stdout(`- ${path.relative(io.cwd, file).replaceAll("\\", "/")}`);

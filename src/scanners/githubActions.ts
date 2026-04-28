@@ -24,7 +24,7 @@ export function scanGithubActions(context: ScanContext): ScannerResult {
     const lower = text.toLowerCase();
     if (/(npm run check|npm test|pnpm test|pytest|cargo test|go test|mvn test|gradle test)/.test(lower)) hasValidation = true;
     if (/permissions\s*:/.test(lower)) hasPermissions = true;
-    const pullRequestTargetMatch = /pull_request_target\s*:/.exec(lower);
+    const pullRequestTargetMatch = /(?:^|\n)\s*(?:-\s*)?pull_request_target\s*:|(?:^|\n)\s*on\s*:\s*(?:\[[^\]]*\bpull_request_target\b[^\]]*\]|\{[^}]*\bpull_request_target\b[^}]*\}|\bpull_request_target\b)/i.exec(text);
     if (pullRequestTargetMatch) {
       findings.push({
         id: "ci.pull-request-target",
@@ -37,7 +37,7 @@ export function scanGithubActions(context: ScanContext): ScannerResult {
         next: "Use pull_request unless this workflow is explicitly hardened and documented."
       });
     }
-    const broadPermissionMatch = /permissions\s*:\s*write-all|^\s+(?:actions|checks|contents|deployments|issues|packages|pages|pull-requests|security-events|statuses)\s*:\s*write\b/im.exec(text);
+    const broadPermissionMatch = /permissions\s*:\s*write-all|permissions\s*:\s*\{[^}]*\b(?:actions|checks|contents|deployments|issues|packages|pages|pull-requests|security-events|statuses)\s*:\s*write\b[^}]*\}|^\s+(?:actions|checks|contents|deployments|issues|packages|pages|pull-requests|security-events|statuses)\s*:\s*write\b/im.exec(text);
     if (broadPermissionMatch) {
       findings.push({
         id: "ci.permissions-too-broad",

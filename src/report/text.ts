@@ -16,7 +16,7 @@ export function formatText(report: Report): string {
   ];
 
   if (report.findings.length === 0) {
-    lines.push("No findings. This repository is agent-ready.");
+    lines.push("No findings across checked surfaces. Review project-specific risks before release.");
     return lines.join("\n");
   }
 

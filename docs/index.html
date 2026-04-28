@@ -124,9 +124,11 @@
       padding: 22px;
       min-height: 230px;
       box-shadow: 0 16px 40px rgba(49,95,159,.08);
+      min-width: 0;
+      overflow: hidden;
     }
     .card h3 { margin: 0 0 12px; font-size: 26px; }
-    .card p { color: var(--muted); line-height: 1.5; font-size: 17px; }
+    .card p { color: var(--muted); line-height: 1.5; font-size: 17px; overflow-wrap: anywhere; }
     .strip {
       display: grid;
       grid-template-columns: .7fr 1.3fr;
@@ -163,12 +165,16 @@
     @media (max-width: 860px) {
       .hero, .grid, .strip { grid-template-columns: 1fr; }
       .hero > *, .strip > *, .grid > * { min-width: 0; }
-      .links { display: none; }
-      .hero { min-height: auto; }
+      .links { display: flex; gap: 8px; font-size: 13px; justify-content: flex-end; }
+      .links a:nth-child(n+4) { display: none; }
+      .hero { min-height: auto; padding: 32px 0 28px; gap: 20px; }
       h1 { font-size: 40px; line-height: .96; max-width: 9ch; }
       .lead { font-size: 19px; max-width: 28ch; }
-      .console { box-shadow: 10px 10px 0 #c8d4e8; max-width: calc(100vw - 34px); }
+      .console { display: none; }
       .screen { overflow-wrap: anywhere; }
+      section { padding: 50px 0; }
+      .card { min-height: 0; }
+      .card p { max-width: 25ch; }
     }
   </style>
 </head>
@@ -180,8 +186,9 @@
         <a href="#checks">Checks</a>
         <a href="#cli">CLI</a>
         <a href="#reports">Reports</a>
-        <a href="../README.md">README</a>
-        <a href="examples/problem-report.md">Example</a>
+        <a href="release-readiness.md">Release</a>
+        <a href="examples/clean-report.md">Clean</a>
+        <a href="examples/problem-report.md">Problem</a>
       </div>
     </nav>
   </header>
@@ -193,13 +200,13 @@
         <p class="lead">A product-grade CLI for maintainers who need Codex, Claude Code, Cursor, Gemini CLI, OpenCode, and MCP tools to operate inside clear, safe, verifiable repository boundaries.</p>
         <div class="actions">
           <a class="button" href="#cli">Run the scan</a>
-          <a class="button secondary" href="../README.md">Read README</a>
+          <a class="button secondary" href="release-readiness.md">Release checklist</a>
         </div>
       </div>
       <div class="console" aria-label="Report preview">
         <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
         <div class="screen">
-          <div class="eyebrow">scan result</div>
+          <div class="eyebrow">sample scan result</div>
           <div class="score"><strong>94</strong><span>Grade A</span></div>
           <div class="finding"><b>P0</b> secrets: 0 found</div>
           <div class="finding"><b>P1</b> CI proof: ready</div>
@@ -235,9 +242,17 @@ node dist/cli.js scan . --out .agent-reliability --format markdown,json,html</co
     <section id="reports">
       <div class="eyebrow">outputs</div>
       <div class="grid">
-        <article class="card"><h3>Markdown</h3><p>Readable in pull requests, issues, and release notes. <a href="examples/problem-report.md">View the redacted example.</a></p></article>
+        <article class="card"><h3>Markdown</h3><p>Readable in pull requests, issues, and release notes. <a href="examples/problem-report.md">View the redacted problem example.</a></p></article>
         <article class="card"><h3>JSON and SARIF</h3><p>Ready for automation, dashboards, and code scanning integrations.</p></article>
         <article class="card"><h3>HTML</h3><p>A polished dashboard for maintainers, launch pages, and dogfood reports.</p></article>
+      </div>
+    </section>
+    <section id="release">
+      <div class="eyebrow">release material</div>
+      <div class="grid">
+        <article class="card"><h3>Clean report</h3><p>Use the <a href="examples/clean-report.md">clean report example</a> to show the no-findings path without overclaiming coverage.</p></article>
+        <article class="card"><h3>Release checklist</h3><p>Run the <a href="release-readiness.md">release readiness checklist</a> before any manual tag, GitHub release, or npm publish.</p></article>
+        <article class="card"><h3>Safety boundary</h3><p>Keep every shared report local-first, reproducible, and free of secrets, cookies, private logs, browser profiles, and private URLs.</p></article>
       </div>
     </section>
   </main>
@@ -245,11 +260,11 @@ node dist/cli.js scan . --out .agent-reliability --format markdown,json,html</co
     <main>
       MIT licensed. Local-first. No cloud upload. No secret echo.
       <div class="footer-links" aria-label="Local project links">
-        <a href="../README.md">README</a>
         <a href="why-agent-reliability.md">Why reliability</a>
         <a href="supported-tools.md">Supported tools</a>
+        <a href="release-readiness.md">Release checklist</a>
+        <a href="examples/clean-report.md">Clean report</a>
         <a href="examples/problem-report.md">Example report</a>
-        <a href="../LICENSE">License</a>
         <a href="#reports">Report concepts</a>
       </div>
     </main>
