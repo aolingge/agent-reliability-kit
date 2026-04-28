@@ -1,6 +1,6 @@
 # Release Readiness
 
-This checklist keeps release preparation repeatable without performing a publish. It covers the low-risk checks maintainers can run before tagging, creating a GitHub release, or publishing to npm.
+This checklist keeps release preparation and follow-up releases repeatable. It covers the low-risk checks maintainers can run before tagging, creating a GitHub release, or publishing another npm version.
 
 ## Current Community Surface
 
@@ -11,7 +11,7 @@ This checklist keeps release preparation repeatable without performing a publish
 - `.github/ISSUE_TEMPLATE/bug_report.yml` requests reproducible, redacted bug reports.
 - `.github/ISSUE_TEMPLATE/scanner_feedback.yml` routes false positives, missing checks, unsupported stacks, and wording feedback into a launch-friendly issue flow.
 - `.github/dependabot.yml` keeps npm development dependencies and GitHub Actions updates visible through pull requests.
-- `docs/launch/` contains pre-release launch copy, a demo script, press kit, community response templates, and channel rules.
+- `docs/launch/` contains launch copy, a demo script, press kit, community response templates, and channel rules.
 - `assets/social-preview.png` and `assets/product-hunt-thumbnail.png` are ready for GitHub social preview and square launch surfaces.
 
 ## CI Baseline
@@ -75,7 +75,7 @@ The npm package preview should include at least:
 
 The package should not include `.env` files, cookies, browser profiles, private logs, local scan output, or credential material. The current `files` allowlist in `package.json` limits the package to `dist`, `docs`, `assets`, `README.md`, and `LICENSE`.
 
-The current repository is in pre-release npm mode: the public GitHub repository and documentation URL exist, and the npm package is not published yet. Keep npm install claims as pre-publication wording until the package is live. Public `repository`, `bugs`, `homepage`, and CI links are now allowed because the GitHub surface exists.
+The current repository is prepared for public npm distribution: the public GitHub repository, documentation URL, and npm package page are live. Keep install claims tied to the live package page and re-run the local release checks before publishing any follow-up version.
 
 ## Manual Release Boundary
 

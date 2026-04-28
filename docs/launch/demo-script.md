@@ -29,13 +29,13 @@ Show:
 
 ### 0:30 - Run the Scan
 
-When the package is publicly available:
+Public npm path:
 
 ```bash
 npx agent-reliability-kit scan . --out .agent-reliability --format markdown,json,html
 ```
 
-From source during pre-release:
+From source when contributing:
 
 ```bash
 npm install

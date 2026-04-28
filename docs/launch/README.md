@@ -1,6 +1,6 @@
 # Launch Kit
 
-This folder contains copy, assets, and operating rules for a careful pre-release launch. It is designed to prepare the public surface without posting from a maintainer account, creating a public repository, or publishing to npm.
+This folder contains copy, assets, and operating rules for a careful public launch. It is designed to prepare the public surface without sharing private scan output, credentials, or unverified adoption claims.
 
 ## Assets
 
@@ -31,4 +31,4 @@ Replace these placeholders only after the corresponding public surface exists:
 - `<NPM_PACKAGE_URL>`
 - `<DOCS_URL>`
 
-Keep the pre-release wording until those links are real. Do not paste private scan output, credentials, cookies, private logs, browser profiles, or private repository URLs into public launch material.
+Use the live links from `live-links.md` when posting. Do not paste private scan output, credentials, cookies, private logs, browser profiles, or private repository URLs into public launch material.

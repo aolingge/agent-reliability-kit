@@ -4,7 +4,7 @@
 
 Verify, harden, and ship AI-agent-assisted codebases in one command.
 
-[![Status](https://img.shields.io/badge/status-pre--release-315f9f.svg)](docs/release-readiness.md)
+[![Status](https://img.shields.io/badge/status-public_npm_release-315f9f.svg)](docs/release-readiness.md)
 [![CI](https://github.com/aolingge/agent-reliability-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/aolingge/agent-reliability-kit/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-181714.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-315f9f.svg)](package.json)
@@ -15,21 +15,20 @@ The flagship path is simple: keep `agent-secret-guard` as the sharp security wed
 
 ## Quick Start
 
-Pre-release status: the public repository and docs are live, and the npm package is not published yet. Run from source for now; the `npx` command below becomes the public install path after npm publication.
-
 - Source: <https://github.com/aolingge/agent-reliability-kit>
+- npm: <https://www.npmjs.com/package/agent-reliability-kit>
 - Docs: <https://aolingge.github.io/agent-reliability-kit/>
+
+```bash
+npx agent-reliability-kit scan . --out .agent-reliability --format markdown,json,html
+```
+
+Run from source when contributing:
 
 ```bash
 npm install
 npm run build
 node dist/cli.js scan . --out .agent-reliability --format markdown,json,html
-```
-
-After npm publication:
-
-```bash
-npx agent-reliability-kit scan .
 ```
 
 Optional focused checks:
@@ -125,7 +124,7 @@ The HTML report is designed for maintainers, contributors, and launch pages. It 
 
 ## Launch Kit
 
-The repository includes a pre-release launch kit so maintainers can prepare a public launch without inventing copy or sharing private data at the last minute.
+The repository includes a launch kit so maintainers can prepare public posts, demos, and replies without inventing copy or sharing private data at the last minute.
 
 - [Launch plan](docs/launch/launch-plan.md)
 - [Channel copy](docs/launch/channel-copy.md)

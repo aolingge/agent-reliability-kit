@@ -12,8 +12,8 @@
   },
   "homepage": "https://aolingge.github.io/agent-reliability-kit/",
   "bin": {
-    "agent-reliability-kit": "./dist/cli.js",
-    "ark": "./dist/cli.js"
+    "agent-reliability-kit": "dist/cli.js",
+    "ark": "dist/cli.js"
   },
   "files": [
     "dist",

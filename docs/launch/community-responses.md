@@ -114,6 +114,6 @@ Please remove any real secrets, private URLs, raw logs, cookies, browser profile
 
 This is not trying to replace code review or security scanning. It is meant to make AI-agent repo readiness visible and repeatable.
 
-### Pre-Release Clarification
+### Availability Clarification
 
-The project is still in pre-release launch preparation. I am avoiding adoption claims and public availability claims until <PUBLIC_REPO_URL> and <NPM_PACKAGE_URL> are live.
+The public repo, docs, and npm package are live. I am still avoiding adoption claims, benchmark claims, and guarantees unless there is evidence.

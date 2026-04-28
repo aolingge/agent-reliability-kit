@@ -31,7 +31,7 @@ Required public links:
 1. Explain the problem clearly: AI agents need reliable repo surfaces, not just better prompts.
 2. Give maintainers a copy-paste quick start that works once the public package is available.
 3. Invite careful feedback before broader distribution.
-4. Keep trust high by being explicit about pre-release status, local-first scanning, and private-data safety.
+4. Keep trust high by being explicit about local-first scanning, private-data safety, and the absence of unsupported adoption claims.
 
 ## Launch Readiness Checklist
 

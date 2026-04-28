@@ -34,13 +34,11 @@ That boundary is important because scan output can include project structure, fi
 
 ## Quick start
 
-After the public package is available:
-
 ```bash
 npx agent-reliability-kit scan .
 ```
 
-During pre-release source usage:
+From source when contributing:
 
 ```bash
 npm install
@@ -73,4 +71,4 @@ Links:
 - npm package: <NPM_PACKAGE_URL>
 - Documentation: <DOCS_URL>
 
-Before publishing this article, remove any link that is not live and keep the pre-release wording if the npm package is not public yet.
+Before publishing this article, replace the placeholders with the live links in `docs/launch/live-links.md`.
