@@ -67,7 +67,7 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
+      "passes": true,
       "notes": "Reuse decision: keep static HTML generation in src/report/html.ts and validate the emitted file in a browser. Online prior art checked: Playwright supports full-page screenshots for static visual validation, but adding Playwright as a dependency is optional and should be justified by actual validation needs."
     },
     {

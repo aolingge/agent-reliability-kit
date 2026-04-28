@@ -11,7 +11,7 @@ export function formatMarkdown(report: Report): string {
     "",
     `Generated: ${report.generatedAt}`,
     "",
-    `Repository: \`${path.basename(report.root)}\``,
+    `Repository: ${inlineCode(path.basename(report.root))}`,
     "",
     `Score: **${report.score}/100**`,
     "",
@@ -42,10 +42,11 @@ export function formatMarkdown(report: Report): string {
   for (const finding of report.findings) {
     lines.push(`### ${badge(finding.severity)} ${finding.title}`);
     lines.push("");
-    lines.push(`- Rule: \`${finding.id}\``);
-    lines.push(`- Scanner: \`${finding.scanner}\``);
-    if (finding.file) lines.push(`- Location: \`${finding.file}${finding.line ? `:${finding.line}` : ""}\``);
-    if (finding.evidence) lines.push(`- Evidence: \`${finding.evidence}\``);
+    lines.push(`- Severity: ${inlineCode(finding.severity)}`);
+    lines.push(`- Rule: ${inlineCode(finding.id)}`);
+    lines.push(`- Scanner: ${inlineCode(finding.scanner)}`);
+    lines.push(`- Location: ${inlineCode(location(finding))}`);
+    if (finding.evidence) lines.push(`- Evidence: ${inlineCode(finding.evidence)}`);
     lines.push(`- Why it matters: ${finding.why}`);
     lines.push(`- Next action: ${finding.next}`);
     lines.push("");
@@ -56,7 +57,7 @@ export function formatMarkdown(report: Report): string {
 
 function formatList(value: unknown): string {
   if (!Array.isArray(value) || value.length === 0) return "none";
-  return value.map((item) => `\`${String(item)}\``).join(", ");
+  return value.map((item) => inlineCode(String(item))).join(", ");
 }
 
 function badge(severity: Finding["severity"]): string {
@@ -69,3 +70,11 @@ function badge(severity: Finding["severity"]): string {
   }[severity];
 }
 
+function location(finding: Finding): string {
+  if (!finding.file) return "repository";
+  return finding.line ? `${finding.file}:${finding.line}` : finding.file;
+}
+
+function inlineCode(value: string): string {
+  return `\`${value.replaceAll("`", "\\`")}\``;
+}

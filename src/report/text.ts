@@ -20,16 +20,14 @@ export function formatText(report: Report): string {
     return lines.join("\n");
   }
 
-  for (const finding of report.findings.slice(0, 20)) {
+  for (const finding of report.findings) {
     lines.push(`${ICONS[finding.severity]} ${finding.id}`);
     lines.push(`  ${finding.title}`);
+    lines.push(`  Severity: ${finding.severity}`);
     lines.push(`  File: ${location(finding)}`);
     lines.push(`  Reason: ${finding.why}`);
     lines.push(`  Next: ${finding.next}`);
-  }
-
-  if (report.findings.length > 20) {
-    lines.push(`... ${report.findings.length - 20} more findings omitted from text output.`);
+    if (finding.evidence) lines.push(`  Evidence: ${finding.evidence}`);
   }
 
   return lines.join("\n");

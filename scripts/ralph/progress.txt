@@ -10,6 +10,7 @@ Started: 2026-04-28T12:51:53
 - Do not commit Ralph local run traces such as `scripts/ralph/planner.last.txt`, `.last-branch`, or `archive/`; they may contain machine-local paths or transient logs.
 - CLI behavior tests should call the exported `runCli(argv, io)` helper with injected stdout/stderr/cwd instead of spawning the compiled `dist/cli.js`; `npm test` runs before `npm run build` in the full check script.
 - Release readiness is now a first-class scanner in `src/scanners/releaseReadiness.ts`; keep README trust checks in `readme.ts` and package/output-contract checks in the release scanner.
+- Report formatters should keep a consistent finding contract: severity, rule id, scanner when applicable, `repository` as the no-file location fallback, reason, next action, and already-redacted evidence when available.
 
 ## 2026-04-28 12:58:39 +08:00 - US-001
 - What was implemented
@@ -114,4 +115,39 @@ Started: 2026-04-28T12:51:53
   - Pattern discovered: scanner-specific fixtures should encode both a positive clean path and one focused failure path, then assert finding IDs rather than full report text.
   - Gotcha encountered: Git emits CRLF conversion warnings on this Windows checkout even when `git diff --check` passes.
   - Useful context for the next iteration: report polish can now rely on `releaseReadiness` facts and the expanded `tests/scan.test.ts` metadata/redaction coverage.
+---
+
+## 2026-04-28 13:30:52 +08:00 - US-004
+- What was implemented
+  - Polished text, Markdown, annotations, HTML, and SARIF report output so every finding carries severity, location, reason, and next action.
+  - Added redacted evidence output to text, HTML, SARIF, and annotations where a scanner provides evidence; Markdown and JSON already carried the redacted evidence.
+  - Updated SARIF generation to emit unique stable rule IDs while keeping one result per finding with locations where available.
+  - Reworked HTML report CSS for responsive desktop/mobile layout, explicit field labels, escaped user-controlled content, no favicon 404, and no horizontal overflow in browser checks.
+  - Added report contract tests for all human-readable formats, secret-risk redaction across every format, and parseable SARIF with deduplicated rules.
+- Files changed
+  - `src/report/annotations.ts`
+  - `src/report/html.ts`
+  - `src/report/markdown.ts`
+  - `src/report/sarif.ts`
+  - `src/report/text.ts`
+  - `tests/scan.test.ts`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm test -- tests\scan.test.ts` passed: 12 tests.
+  - `npm run typecheck` passed.
+  - `npm run build` passed.
+  - `npm test` passed: 20 tests across 2 files.
+  - `git diff --check -- src\report\annotations.ts src\report\html.ts src\report\markdown.ts src\report\sarif.ts src\report\text.ts tests\scan.test.ts` passed; Git printed only local CRLF conversion warnings.
+  - `node dist\cli.js scan tests\fixtures\unsafe-action --out .tmp\us-004-report --format markdown,json,html,sarif --min-score 0` passed and wrote static report artifacts under the fixture `.tmp` directory.
+  - Parsed generated `report.sarif` with Node JSON.parse: 1 run, 10 rules, 10 results.
+  - Browser verification via local `127.0.0.1:4178` static server passed at desktop width 1280 and mobile width 390: `scrollWidth` matched viewport width, overflow count was 0, and 10 finding cards rendered with reason, next action, and severity text.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found. The changed formatters satisfy the US-004 acceptance criteria, keep evidence redacted, and avoid adding a Playwright dependency.
+  - Safety review: generated browser screenshots, `.playwright-mcp` logs, and temporary server process were removed or stopped; generated `.tmp` report files are ignored and not committed.
+  - P2: mobile report cards are intentionally dense because every finding now shows full rule metadata; future design polish could further tune compact typography without changing the output contract.
+- Learnings for future iterations:
+  - Pattern discovered: tests should validate report content through `renderReport(report, format)` so scanner redaction and formatter contracts are checked together.
+  - Gotcha encountered: Playwright MCP blocks `file://`, so static HTML verification should use a temporary `127.0.0.1` server and then stop it.
+  - Useful context for the next iteration: docs/product-page work can reference the same report field contract and the verified responsive HTML behavior from this story.
 ---

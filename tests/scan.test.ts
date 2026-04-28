@@ -6,7 +6,7 @@ import { scanRepository } from "../src/core/scan.js";
 import { initProject } from "../src/init/initProject.js";
 import { formatMarkdown } from "../src/report/markdown.js";
 import { renderReport } from "../src/report/write.js";
-import type { Finding, ReportFormat } from "../src/types.js";
+import type { Finding, Report, ReportFormat } from "../src/types.js";
 
 const fixtures = path.join(import.meta.dirname, "fixtures");
 const syntheticSecret = "sk-scannerDetectionOnlyValueZYXWVUTSRQPONML";
@@ -41,6 +41,7 @@ describe("scanRepository", () => {
     const formats: ReportFormat[] = ["text", "markdown", "json", "html", "sarif", "annotations"];
     for (const format of formats) {
       const output = renderReport(report, format);
+      expect(output).toContain("[redacted]");
       expect(output).not.toContain(syntheticSecret);
     }
   });
@@ -68,6 +69,66 @@ describe("scanRepository", () => {
     const markdown = formatMarkdown(report);
     expect(markdown).toContain("Agent Reliability Report");
     expect(markdown).toContain("Findings");
+  });
+
+  it("renders every finding with severity, location, reason, and next action in human formats", () => {
+    const report = scanRepository(path.join(fixtures, "unsafe-action"));
+    const outputs = {
+      text: renderReport(report, "text"),
+      markdown: renderReport(report, "markdown"),
+      annotations: renderReport(report, "annotations")
+    };
+
+    for (const finding of report.findings) {
+      for (const output of [outputs.text, outputs.markdown]) {
+        expect(output).toContain(finding.severity);
+        expect(output).toContain(location(finding));
+        expect(output).toContain(finding.why);
+        expect(output).toContain(finding.next);
+      }
+
+      expect(outputs.annotations).toContain(escapeAnnotation(finding.severity));
+      expect(outputs.annotations).toContain(escapeAnnotation(location(finding)));
+      expect(outputs.annotations).toContain(escapeAnnotation(finding.why));
+      expect(outputs.annotations).toContain(escapeAnnotation(finding.next));
+    }
+  });
+
+  it("renders parseable SARIF with stable unique rule ids and locations", () => {
+    const report = fixtureReport([
+      {
+        id: "ci.no-validation-command",
+        title: "No validation command",
+        severity: "medium",
+        scanner: "github-actions",
+        file: ".github/workflows/ci.yml",
+        line: 12,
+        why: "CI should prove the repository still builds and tests.",
+        next: "Add npm run check or an equivalent validation command."
+      },
+      {
+        id: "ci.no-validation-command",
+        title: "No validation command",
+        severity: "medium",
+        scanner: "github-actions",
+        file: ".github/workflows/release.yml",
+        line: 8,
+        why: "CI should prove the repository still builds and tests.",
+        next: "Add npm run check or an equivalent validation command."
+      }
+    ]);
+
+    const sarif = JSON.parse(renderReport(report, "sarif")) as {
+      runs: Array<{
+        tool: { driver: { rules: Array<{ id: string }> } };
+        results: Array<{ ruleId: string; locations: Array<{ physicalLocation: { artifactLocation: { uri: string } } }> }>;
+      }>;
+    };
+
+    expect(sarif.runs[0]?.tool.driver.rules.map((rule) => rule.id)).toEqual(["ci.no-validation-command"]);
+    expect(sarif.runs[0]?.results).toHaveLength(2);
+    expect(sarif.runs[0]?.results[0]?.ruleId).toBe("ci.no-validation-command");
+    expect(sarif.runs[0]?.results[0]?.locations[0]?.physicalLocation.artifactLocation.uri).toBe(".github/workflows/ci.yml");
   });
 
   it("returns actionable finding metadata", () => {
@@ -108,4 +169,36 @@ function expectCompleteFinding(finding: Finding): void {
   expect(finding.why).toBeTruthy();
   expect(finding.next).toBeTruthy();
   if (finding.file) expect(finding.file.trim()).toBe(finding.file);
+}
+
+function location(finding: Finding): string {
+  if (!finding.file) return "repository";
+  return finding.line ? `${finding.file}:${finding.line}` : finding.file;
+}
+
+function escapeAnnotation(value: string): string {
+  return value.replaceAll("%", "%25").replaceAll("\r", "%0D").replaceAll("\n", "%0A").replaceAll(",", "%2C").replaceAll(":", "%3A");
+}
+
+function fixtureReport(findings: Finding[]): Report {
+  return {
+    tool: {
+      name: "agent-reliability-kit",
+      version: "0.1.0"
+    },
+    root: "fixture",
+    generatedAt: "2026-04-28T00:00:00.000Z",
+    score: 80,
+    grade: "B",
+    summary: {
+      critical: 0,
+      high: 0,
+      medium: findings.length,
+      low: 0,
+      info: 0,
+      total: findings.length
+    },
+    facts: {},
+    findings
+  };
 }
