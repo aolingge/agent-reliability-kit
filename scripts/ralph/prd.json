@@ -49,7 +49,7 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
+      "passes": true,
       "notes": "Reuse decision: extend existing scanners and fixtures in src/scanners and tests/fixtures rather than introducing an external static-analysis engine. Online prior art checked: GitHub Actions permissions docs support least-privilege checks; OpenSSF Scorecard is a mature option, but this project should first dogfood its own local scanner and only add Scorecard as optional documentation or CI guidance if needed."
     },
     {

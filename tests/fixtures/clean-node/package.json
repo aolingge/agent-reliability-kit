@@ -1,7 +1,13 @@
 {
   "name": "clean-node-fixture",
   "version": "1.0.0",
+  "description": "Clean scanner fixture for Agent Reliability Kit.",
   "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://example.invalid/clean-node-fixture.git"
+  },
   "scripts": {
     "build": "node -e \"console.log('build ok')\"",
     "test": "node -e \"console.log('test ok')\"",
@@ -10,4 +16,3 @@
     "check": "npm run lint && npm run typecheck && npm test && npm run build"
   }
 }
-

@@ -7,6 +7,7 @@ import { scanAiAgentRisk } from "../scanners/aiAgentRisk.js";
 import { scanCommands } from "../scanners/commands.js";
 import { scanGithubActions } from "../scanners/githubActions.js";
 import { scanReadme } from "../scanners/readme.js";
+import { scanReleaseReadiness } from "../scanners/releaseReadiness.js";
 import { scanSecrets } from "../scanners/secrets.js";
 import type { Report, ScanContext, ScannerResult } from "../types.js";
 
@@ -16,6 +17,7 @@ const scanners = [
   scanAgentInstructions,
   scanCommands,
   scanReadme,
+  scanReleaseReadiness,
   scanSecrets,
   scanGithubActions,
   scanAiAgentRisk
@@ -80,4 +82,3 @@ function isIgnored(relativePath: string, patterns: string[]): boolean {
     return relativePath === normalized || relativePath.startsWith(`${normalized}/`);
   });
 }
-

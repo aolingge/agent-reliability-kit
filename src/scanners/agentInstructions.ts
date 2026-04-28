@@ -23,6 +23,13 @@ export function scanAgentInstructions(context: ScanContext): ScannerResult {
   let mentionsSecrets = false;
   let mentionsVerification = false;
   let mentionsRisk = false;
+  const commandGuidance: Array<{
+    command: string;
+    file: string;
+    line: number;
+    requires: boolean;
+    forbids: boolean;
+  }> = [];
 
   for (const file of agentFiles) {
     const text = readTextFile(file) ?? "";
@@ -33,6 +40,18 @@ export function scanAgentInstructions(context: ScanContext): ScannerResult {
     for (const match of text.matchAll(/`([^`]*(?:npm|pnpm|yarn|pytest|cargo|go test|gradle|mvn)[^`]*)`/gi)) {
       commandClaims.push(match[1].trim());
     }
+    text.split(/\r?\n/).forEach((line, index) => {
+      for (const match of line.matchAll(/\b(?:npm run [\w:-]+|npm test|pnpm [\w:-]+|yarn [\w:-]+|pytest|cargo test|go test(?: \.\/\.\.\.)?|gradle test|mvn test)\b/gi)) {
+        const lowerLine = line.toLowerCase();
+        commandGuidance.push({
+          command: match[0].toLowerCase(),
+          file: file.relativePath,
+          line: index + 1,
+          requires: /\b(always|must|required|before finishing|before merge)\b/.test(lowerLine),
+          forbids: /\b(do not|don't|dont|never|skip|avoid)\b/.test(lowerLine)
+        });
+      }
+    });
   }
 
   if (!mentionsSecrets) {
@@ -71,12 +90,19 @@ export function scanAgentInstructions(context: ScanContext): ScannerResult {
     });
   }
 
-  if (commandClaims.some((command) => /skip|do not|never/.test(command.toLowerCase())) && commandClaims.some((command) => /must|always|required/.test(command.toLowerCase()))) {
+  const conflict = commandGuidance.find((entry) =>
+    entry.forbids &&
+    commandGuidance.some((other) => other.command === entry.command && other.requires && other.file !== entry.file)
+  );
+  if (conflict || (commandClaims.some((command) => /skip|do not|never/.test(command.toLowerCase())) && commandClaims.some((command) => /must|always|required/.test(command.toLowerCase())))) {
     findings.push({
       id: "agents.possible-command-conflict",
       title: "Agent instructions may contain conflicting command guidance",
       severity: "medium",
       scanner: "agent-instructions",
+      file: conflict?.file,
+      line: conflict?.line,
+      evidence: conflict ? conflict.command : undefined,
       why: "Multiple agent files can produce inconsistent behavior when they disagree about verification.",
       next: "Keep the root AGENTS.md authoritative and move tool-specific differences into clearly labeled sections."
     });

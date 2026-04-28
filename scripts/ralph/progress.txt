@@ -9,6 +9,7 @@ Started: 2026-04-28T12:51:53
 - Generated local outputs are intentionally ignored via `.gitignore`: `dist/`, `.tmp/`, `.agent-reliability/`, logs, root Codex `progress*.md` files, and real `.env` files.
 - Do not commit Ralph local run traces such as `scripts/ralph/planner.last.txt`, `.last-branch`, or `archive/`; they may contain machine-local paths or transient logs.
 - CLI behavior tests should call the exported `runCli(argv, io)` helper with injected stdout/stderr/cwd instead of spawning the compiled `dist/cli.js`; `npm test` runs before `npm run build` in the full check script.
+- Release readiness is now a first-class scanner in `src/scanners/releaseReadiness.ts`; keep README trust checks in `readme.ts` and package/output-contract checks in the release scanner.
 
 ## 2026-04-28 12:58:39 +08:00 - US-001
 - What was implemented
@@ -78,4 +79,39 @@ Started: 2026-04-28T12:51:53
   - Pattern discovered: use injected CLI IO for fast behavior tests because the full check script tests before it builds `dist/`.
   - Gotcha encountered: repository lint walks ignored root progress files, so generated local progress markdown can break lint even when git ignores it.
   - Useful context for the next iteration: `tests/cli.test.ts` now covers parser behavior; later scanner/report stories can extend it for user-facing CLI expectations instead of spawning a subprocess.
+---
+
+## 2026-04-28 13:20:02 +08:00 - US-003
+- What was implemented
+  - Strengthened agent-instruction conflict detection for explicit run-vs-skip command guidance across agent files.
+  - Added release-readiness scanning for package metadata and documented report output paths.
+  - Expanded GitHub Actions scanning for broad write permissions, workflow_run triggers, line numbers, and file-backed validation/permission findings.
+  - Updated scanner fixtures for clean package metadata, documented report outputs, synthetic token-like evidence, and unsafe workflow permissions.
+  - Added scanner tests for clean, conflicting-agent-instructions, missing-command, unsafe-action, and secret-risk repositories.
+  - Added report-format redaction assertions and finding metadata assertions.
+- Files changed
+  - `src/core/scan.ts`
+  - `src/scanners/agentInstructions.ts`
+  - `src/scanners/githubActions.ts`
+  - `src/scanners/releaseReadiness.ts`
+  - `tests/scan.test.ts`
+  - `tests/fixtures/clean-node/README.md`
+  - `tests/fixtures/clean-node/package.json`
+  - `tests/fixtures/secret-risk/config.txt`
+  - `tests/fixtures/unsafe-action/.github/workflows/danger.yml`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm test -- tests\scan.test.ts` passed: 10 tests.
+  - `npm run typecheck` passed.
+  - `npm test` passed: 18 tests across 2 files.
+  - `git diff --check -- <US-003 files>` passed; Git printed only local line-ending conversion warnings.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found. The changed scanners and tests satisfy the US-003 acceptance criteria without adding external dependencies or secrets.
+  - Safety review: the token-like fixture value is synthetic (`scannerDetectionOnly`) and every rendered report format is tested not to expose the raw value.
+  - P2: `release.package-json.missing` is currently Node-package-oriented and may be noisy for non-Node repositories; acceptable for this product-quality TypeScript CLI story, but future language detection could narrow it.
+- Learnings for future iterations:
+  - Pattern discovered: scanner-specific fixtures should encode both a positive clean path and one focused failure path, then assert finding IDs rather than full report text.
+  - Gotcha encountered: Git emits CRLF conversion warnings on this Windows checkout even when `git diff --check` passes.
+  - Useful context for the next iteration: report polish can now rely on `releaseReadiness` facts and the expanded `tests/scan.test.ts` metadata/redaction coverage.
 ---
