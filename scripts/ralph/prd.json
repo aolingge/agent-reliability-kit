@@ -85,7 +85,7 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
+      "passes": true,
       "notes": "Reuse decision: npm docs recommend README content for package users, and the repo already has README.md, docs/index.html, docs/examples, and SVG assets. Improve those assets in place instead of replacing the site with a framework."
     },
     {

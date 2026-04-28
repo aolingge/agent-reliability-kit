@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Agent Reliability Kit</title>
-  <meta name="description" content="Verify, harden, and ship AI-agent-assisted codebases in one command.">
+  <meta name="description" content="Verify, harden, and ship AI-agent-assisted codebases locally in one command.">
   <style>
     :root {
       --ink: #181714;
-      --paper: #f7f4ec;
-      --panel: #fffdf7;
-      --line: #ddd5c4;
-      --muted: #6c675c;
+      --paper: #f7f8fb;
+      --panel: #ffffff;
+      --line: #d8dee8;
+      --muted: #526071;
       --blue: #315f9f;
       --green: #1f7a5b;
       --red: #b42318;
@@ -25,8 +25,8 @@
       color: var(--ink);
       overflow-x: hidden;
       background:
-        linear-gradient(90deg, rgba(24,23,20,.05) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(24,23,20,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(49,95,159,.07) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(49,95,159,.07) 1px, transparent 1px),
         var(--paper);
       background-size: 34px 34px;
     }
@@ -35,7 +35,7 @@
       position: sticky;
       top: 0;
       z-index: 5;
-      background: rgba(247,244,236,.92);
+      background: rgba(247,248,251,.92);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--line);
     }
@@ -54,7 +54,8 @@
       font-size: 14px;
       color: var(--blue);
     }
-    .links { display: flex; gap: 16px; color: var(--muted); font-size: 15px; }
+    .links { display: flex; flex-wrap: wrap; gap: 16px; color: var(--muted); font-size: 15px; }
+    .links a:hover, .footer-links a:hover, .card a:hover { color: var(--blue); }
     main { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
     .hero {
       min-height: calc(100vh - 64px);
@@ -73,12 +74,12 @@
       letter-spacing: 0;
     }
     h1 {
-      font-size: clamp(54px, 9vw, 118px);
-      line-height: .87;
+      font-size: clamp(48px, 7vw, 92px);
+      line-height: .94;
       letter-spacing: 0;
       max-width: 760px;
       margin: 18px 0 22px;
-      overflow-wrap: anywhere;
+      overflow-wrap: normal;
     }
     .lead {
       font-size: clamp(20px, 2.4vw, 30px);
@@ -100,7 +101,7 @@
     .console {
       background: var(--panel);
       border: 3px solid var(--ink);
-      box-shadow: 18px 18px 0 #cfc5b1;
+      box-shadow: 18px 18px 0 #c8d4e8;
       overflow: hidden;
       min-width: 0;
       max-width: 100%;
@@ -122,7 +123,7 @@
       border: 1px solid var(--line);
       padding: 22px;
       min-height: 230px;
-      box-shadow: 0 16px 40px rgba(45,35,15,.08);
+      box-shadow: 0 16px 40px rgba(49,95,159,.08);
     }
     .card h3 { margin: 0 0 12px; font-size: 26px; }
     .card p { color: var(--muted); line-height: 1.5; font-size: 17px; }
@@ -144,6 +145,20 @@
       font-size: 14px;
       line-height: 1.6;
     }
+    pre code { white-space: pre-wrap; overflow-wrap: anywhere; }
+    .note {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+      margin: 0;
+    }
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 18px;
+      font-size: 15px;
+    }
     footer { padding: 48px 0 70px; color: var(--muted); border-top: 1px solid var(--line); }
     @media (max-width: 860px) {
       .hero, .grid, .strip { grid-template-columns: 1fr; }
@@ -152,7 +167,7 @@
       .hero { min-height: auto; }
       h1 { font-size: 40px; line-height: .96; max-width: 9ch; }
       .lead { font-size: 19px; max-width: 28ch; }
-      .console { box-shadow: 10px 10px 0 #cfc5b1; max-width: calc(100vw - 34px); }
+      .console { box-shadow: 10px 10px 0 #c8d4e8; max-width: calc(100vw - 34px); }
       .screen { overflow-wrap: anywhere; }
     }
   </style>
@@ -165,6 +180,8 @@
         <a href="#checks">Checks</a>
         <a href="#cli">CLI</a>
         <a href="#reports">Reports</a>
+        <a href="../README.md">README</a>
+        <a href="examples/problem-report.md">Example</a>
       </div>
     </nav>
   </header>
@@ -176,7 +193,7 @@
         <p class="lead">A product-grade CLI for maintainers who need Codex, Claude Code, Cursor, Gemini CLI, OpenCode, and MCP tools to operate inside clear, safe, verifiable repository boundaries.</p>
         <div class="actions">
           <a class="button" href="#cli">Run the scan</a>
-          <a class="button secondary" href="#reports">See reports</a>
+          <a class="button secondary" href="../README.md">Read README</a>
         </div>
       </div>
       <div class="console" aria-label="Report preview">
@@ -196,7 +213,7 @@
       <div class="grid">
         <article class="card"><h3>Agent instructions</h3><p>Find missing or conflicting rules across AGENTS.md, Claude, Gemini, Codex, and Copilot instruction files.</p></article>
         <article class="card"><h3>Verification commands</h3><p>Detect build, test, lint, typecheck, and check commands so agents can prove changes before they stop.</p></article>
-        <article class="card"><h3>Security signals</h3><p>Catch token-like values, tracked env files, unsafe workflow triggers, and risky pipe-to-shell patterns.</p></article>
+        <article class="card"><h3>Security signals</h3><p>Catch token-like values, tracked env files, unsafe workflow triggers, and risky pipe-to-shell patterns without uploading source code.</p></article>
       </div>
     </section>
     <section id="cli" class="strip">
@@ -208,17 +225,34 @@
 npm run build
 node dist/cli.js scan . --out .agent-reliability --format markdown,json,html</code></pre>
     </section>
+    <section id="safety" class="strip">
+      <div>
+        <div class="eyebrow">safety model</div>
+        <h2>Local reports, redacted evidence.</h2>
+      </div>
+      <p class="note">Scans run on your machine and write local report files. Shared reports, docs examples, and issue reports must not include real secrets, private logs, cookies, browser profiles, or private URLs.</p>
+    </section>
     <section id="reports">
       <div class="eyebrow">outputs</div>
       <div class="grid">
-        <article class="card"><h3>Markdown</h3><p>Readable in pull requests, issues, and release notes.</p></article>
+        <article class="card"><h3>Markdown</h3><p>Readable in pull requests, issues, and release notes. <a href="examples/problem-report.md">View the redacted example.</a></p></article>
         <article class="card"><h3>JSON and SARIF</h3><p>Ready for automation, dashboards, and code scanning integrations.</p></article>
         <article class="card"><h3>HTML</h3><p>A polished dashboard for maintainers, launch pages, and dogfood reports.</p></article>
       </div>
     </section>
   </main>
   <footer>
-    <main>MIT licensed. Local-first. No cloud upload. No secret echo.</main>
+    <main>
+      MIT licensed. Local-first. No cloud upload. No secret echo.
+      <div class="footer-links" aria-label="Local project links">
+        <a href="../README.md">README</a>
+        <a href="why-agent-reliability.md">Why reliability</a>
+        <a href="supported-tools.md">Supported tools</a>
+        <a href="examples/problem-report.md">Example report</a>
+        <a href="../LICENSE">License</a>
+        <a href="#reports">Report concepts</a>
+      </div>
+    </main>
   </footer>
 </body>
 </html>

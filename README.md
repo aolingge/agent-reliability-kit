@@ -30,6 +30,8 @@ The scan writes:
 - `.agent-reliability/report.json`
 - `.agent-reliability/report.html`
 
+The quick start runs entirely on your machine. Do not include real secrets, private logs, cookies, browser profiles, or private URLs in examples, fixtures, bug reports, or shared scan output.
+
 ## Why It Exists
 
 AI coding agents fail most often on the unglamorous parts: missing repo rules, unclear commands, conflicting instruction files, unsafe CI defaults, accidental secret exposure, and README promises nobody has replayed. This project turns those weak signals into one shareable report.
@@ -72,6 +74,7 @@ The HTML report is designed for maintainers, contributors, and launch pages. It 
 
 - Local-first: source code and findings stay on your machine.
 - No secret echo: token-like evidence is redacted before it appears in reports.
+- Private-data safe: reports, examples, and issues must not include real secrets, private logs, cookies, browser profiles, or private URLs.
 - Agent-neutral: useful for Codex, Claude Code, Cursor, Gemini CLI, OpenCode, and similar tools.
 - CI-friendly: Markdown, JSON, SARIF, and GitHub Actions annotations are first-class outputs.
 - Maintainer-friendly: findings explain why they matter and what to do next.
@@ -118,4 +121,3 @@ Small, well-tested contributions are welcome. Start with [CONTRIBUTING.md](CONTR
 ## License
 
 MIT
-

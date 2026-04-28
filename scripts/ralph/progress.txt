@@ -7,6 +7,7 @@ Started: 2026-04-28T12:51:53
 - Scanner modules return `Finding` objects with `id`, `title`, `severity`, `scanner`, `why`, and `next`; include `file`, `line`, and redacted `evidence` when applicable.
 - Report formats are `text`, `markdown`, `json`, `html`, `sarif`, and `annotations`; `writeReports` writes file-backed formats and skips console-only `text`/`annotations`.
 - Generated local outputs are intentionally ignored via `.gitignore`: `dist/`, `.tmp/`, `.agent-reliability/`, logs, root Codex `progress*.md` files, and real `.env` files.
+- Keep `agent-reliability.config.json` broad enough to ignore synthetic scanner test inputs such as `tests/scan.test.ts` and `tests/fixtures/**`; root `node dist/cli.js scan .` should remain a clean README quick-start path.
 - Do not commit Ralph local run traces such as `scripts/ralph/planner.last.txt`, `.last-branch`, or `archive/`; they may contain machine-local paths or transient logs.
 - CLI behavior tests should call the exported `runCli(argv, io)` helper with injected stdout/stderr/cwd instead of spawning the compiled `dist/cli.js`; `npm test` runs before `npm run build` in the full check script.
 - Release readiness is now a first-class scanner in `src/scanners/releaseReadiness.ts`; keep README trust checks in `readme.ts` and package/output-contract checks in the release scanner.
@@ -150,4 +151,37 @@ Started: 2026-04-28T12:51:53
   - Pattern discovered: tests should validate report content through `renderReport(report, format)` so scanner redaction and formatter contracts are checked together.
   - Gotcha encountered: Playwright MCP blocks `file://`, so static HTML verification should use a temporary `127.0.0.1` server and then stop it.
   - Useful context for the next iteration: docs/product-page work can reference the same report field contract and the verified responsive HTML behavior from this story.
+---
+
+## 2026-04-28 13:53:30 +08:00 - US-005
+- What was implemented
+  - Polished README and docs copy so the local-first safety boundary explicitly covers real secrets, private logs, cookies, browser profiles, and private URLs.
+  - Updated `docs/index.html` with working local links to README, docs, the redacted example, license, and report concepts; added a safety-model section and adjusted responsive typography/code wrapping after browser review.
+  - Reworked `docs/examples/problem-report.md` into a reproducible redacted issue template and documented that the synthetic critical fixture intentionally exits 1 after writing reports.
+  - Updated `agent-reliability.config.json` to ignore synthetic scanner test inputs so the documented root quick start can scan this repository cleanly.
+- Files changed
+  - `README.md`
+  - `agent-reliability.config.json`
+  - `docs/index.html`
+  - `docs/examples/problem-report.md`
+  - `docs/supported-tools.md`
+  - `docs/why-agent-reliability.md`
+  - `scripts/ralph/prd.json`
+  - `scripts/ralph/progress.txt`
+- Verification run
+  - `npm install` passed: dependencies up to date, 0 vulnerabilities.
+  - `npm run build` passed.
+  - `node dist/cli.js scan . --out .agent-reliability --format markdown,json,html` passed: score 100/100 grade A, 0 findings, reports written locally.
+  - `npm run check` passed: lint ok, typecheck passed, 20 tests passed, build passed.
+  - Static link check passed: README, docs, example, license, and report-concept links all resolve locally.
+  - Playwright browser verification passed on `docs/index.html` at 1280x900 and 390x844: status 200, no console errors, no horizontal overflow, required safety text present, and all 14 links returned 200.
+  - `git diff --check` passed; Git printed only local CRLF conversion warnings from the Windows checkout.
+- Self-review result and remaining P2/P3 risks, if any
+  - P0/P1: none found. Acceptance criteria are covered by verified commands, local link checks, browser checks, and the redacted example template.
+  - Safety review: generated `.agent-reliability/`, `.tmp/`, and fixture `.tmp/` reports are ignored and not committed; no secrets, cookies, private paths, or raw private logs were added.
+  - P2: the example fixture command intentionally exits 1 because it reproduces a critical finding; the docs now state that behavior, but future examples could add a non-failing clean-report sample as a companion.
+- Learnings for future iterations:
+  - Pattern discovered: self-scanning this repository should ignore deliberate scanner fixtures through `agent-reliability.config.json`, while tests should continue scanning those fixtures directly.
+  - Gotcha encountered: Playwright found mobile overflow in the inline CLI command; `pre code { white-space: pre-wrap; overflow-wrap: anywhere; }` fixed it without adding JavaScript.
+  - Useful context for the next iteration: US-006 can reuse the verified local-first safety language and should avoid committing generated `.agent-reliability/` or `.tmp/` reports.
 ---
