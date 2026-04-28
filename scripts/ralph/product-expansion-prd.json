@@ -1,0 +1,37 @@
+{
+  "project": "Agent Reliability Kit Product Expansion",
+  "branchName": "local/product-expansion",
+  "description": "Turn agent-reliability-kit into the flagship AI-agent reliability entry point, with agent-secret-guard as the security wedge and local MVPs for team audit, private MCP registry, n8n safety/backup, AI cost guard, and launch distribution materials.",
+  "userStories": [
+    {
+      "id": "PX-001",
+      "title": "Local team audit MVP",
+      "description": "As a team lead, I want local scan history, policy checks, audit exports, and a dry-run Slack payload so I can evaluate team readiness without a hosted service.",
+      "passes": true
+    },
+    {
+      "id": "PX-002",
+      "title": "Private MCP registry and allowlist",
+      "description": "As a maintainer, I want MCP config files checked against approved servers, permissions, trust score, commands, URLs, owners, and reasons.",
+      "passes": true
+    },
+    {
+      "id": "PX-003",
+      "title": "n8n safety and redacted backup",
+      "description": "As a self-hosted automation user, I want dangerous n8n workflow exports detected and redacted backups written to a Git-friendly directory.",
+      "passes": true
+    },
+    {
+      "id": "PX-004",
+      "title": "AI cost guard",
+      "description": "As an agent user, I want local JSON/JSONL traces summarized by provider/model with budget alerts.",
+      "passes": true
+    },
+    {
+      "id": "PX-005",
+      "title": "Distribution and commercial packaging",
+      "description": "As an open-source maintainer, I want README, docs, comparison pages, launch copy, and commercial support notes that make the product easy to understand and promote.",
+      "passes": true
+    }
+  ]
+}

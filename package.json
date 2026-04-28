@@ -42,6 +42,9 @@
     "security",
     "ci",
     "mcp",
+    "mcp-security",
+    "n8n",
+    "llm-cost",
     "sarif"
   ],
   "author": "Aolinge",

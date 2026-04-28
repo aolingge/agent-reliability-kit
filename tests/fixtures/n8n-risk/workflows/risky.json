@@ -1,0 +1,35 @@
+{
+  "name": "Risky n8n workflow fixture",
+  "nodes": [
+    {
+      "name": "Public intake",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "public-intake",
+        "authentication": "none"
+      }
+    },
+    {
+      "name": "Run deployment command",
+      "type": "n8n-nodes-base.executeCommand",
+      "parameters": {
+        "command": "deploy.sh"
+      }
+    },
+    {
+      "name": "Risky code",
+      "type": "n8n-nodes-base.code",
+      "parameters": {
+        "jsCode": "const token = process.env.DEPLOY_TOKEN; eval($json.body);"
+      }
+    },
+    {
+      "name": "Synthetic secret note",
+      "type": "n8n-nodes-base.set",
+      "parameters": {
+        "notes": "token=SCANNER_ONLY_VALUE_ZYXWVUTSRQPONMLK"
+      }
+    }
+  ],
+  "connections": {}
+}

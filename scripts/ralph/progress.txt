@@ -1,6 +1,47 @@
 # Ralph Progress Log
 Started: 2026-04-28T12:51:53
 ---
+## 2026-04-28 18:22:30 +08:00 - PRODUCT-EXPANSION
+- What was implemented
+  - Added local team audit MVP with scan history snapshots, policy checks, audit Markdown/JSON, and dry-run Slack payload generation. The command writes local files only and never calls Slack.
+  - Added private MCP registry audit with approved servers, trust score, permissions, approved commands/URLs, risk owner/reason, and token-like config checks.
+  - Added n8n workflow safety scanning to the default repository scan plus `n8n-scan` and redacted `n8n-backup` commands.
+  - Added local AI cost guard that parses JSON/JSONL trace events, summarizes provider/model token cost, and warns over budget.
+  - Updated README, product docs, comparison pages, commercial support positioning, consolidation roadmap, launch distribution checklist, demo GIF script, and a CLI demo SVG.
+  - Added focused fixtures and tests for team audit, MCP registry, n8n safety/backup, and cost guard.
+- Files changed
+  - `README.md`
+  - `package.json`
+  - `scripts/ralph/task.md`
+  - `scripts/ralph/product-expansion-prd.json`
+  - `src/cli.ts`
+  - `src/core/files.ts`
+  - `src/core/redaction.ts`
+  - `src/core/scan.ts`
+  - `src/cost/costReport.ts`
+  - `src/mcp/registry.ts`
+  - `src/n8n/backup.ts`
+  - `src/scanners/n8n.ts`
+  - `src/team/teamAudit.ts`
+  - `tests/cli.test.ts`
+  - `tests/scan.test.ts`
+  - new docs under `docs/`
+  - new fixtures under `tests/fixtures/`
+- Verification run
+  - `npm run check` passed: lint ok, typecheck ok, 28 tests passed, build passed.
+  - `npm run smoke` passed.
+  - `node dist/cli.js team-audit tests/fixtures/clean-node --out .tmp/team-smoke` passed.
+  - `node dist/cli.js mcp-registry tests/fixtures/mcp-registry --out .tmp/mcp-smoke` returned expected exit 1 with intentional fixture findings.
+  - `node dist/cli.js n8n-scan tests/fixtures/n8n-risk --out .tmp/n8n-smoke --format markdown,json --min-score 0` returned expected exit 1 with intentional critical fixture findings.
+  - `node dist/cli.js n8n-backup tests/fixtures/n8n-risk --backup-dir .tmp/n8n-backup-smoke` passed and wrote a redacted backup.
+  - `node dist/cli.js cost-report tests/fixtures/cost-trace --budget-usd 0.50 --out .tmp/cost-smoke` returned expected exit 1 with an intentional budget alert.
+- Boundaries kept
+  - No npm publish, GitHub release, remote push, real Slack webhook call, paid account action, or real secret use.
+  - Generated `.tmp` smoke outputs were removed after verification.
+- Remaining P2 risks
+  - The hosted dashboard, real Slack delivery, and SaaS billing layer are intentionally not implemented yet; this iteration creates the local MVP and launch/commercial path.
+  - Nested subcommands such as `ark mcp doctor` and `ark pr verify` are captured in the consolidation roadmap; this iteration uses flat CLI commands to keep the parser small and tested.
+---
 
 ## Codebase Patterns
 - Keep the root `AGENTS.md` authoritative for repository rules; fixture-level `AGENTS.md` and `CLAUDE.md` files under `tests/fixtures/` are scanner inputs, not active project instructions.

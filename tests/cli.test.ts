@@ -100,4 +100,76 @@ describe("runCli", () => {
     expect(() => JSON.parse(output)).not.toThrow();
     expect(output).not.toContain("Written reports:");
   });
+
+  it("writes team audit history and a dry-run Slack payload", () => {
+    const repo = createFixtureCopy("clean-node");
+    fs.mkdirSync(path.join(repo, ".agent-reliability"), { recursive: true });
+    fs.writeFileSync(path.join(repo, ".agent-reliability", "team-policy.json"), JSON.stringify({
+      minScore: 80,
+      maxCritical: 0,
+      maxHigh: 0,
+      requiredFiles: ["README.md", "AGENTS.md"],
+      requireMcpRegistry: false,
+      slackChannel: "#agent-reliability"
+    }, null, 2), "utf8");
+    const capture = createCapture();
+    const code = runCli(["team-audit", repo, "--out", ".agent-reliability/team"], capture.io);
+
+    expect(code).toBe(0);
+    expect(fs.existsSync(path.join(repo, ".agent-reliability", "team", "team-audit.json"))).toBe(true);
+    expect(fs.existsSync(path.join(repo, ".agent-reliability", "team", "slack-payload.json"))).toBe(true);
+    expect(fs.readdirSync(path.join(repo, ".agent-reliability", "team", "history")).some((file) => file.endsWith(".json"))).toBe(true);
+  });
+
+  it("checks MCP configs against a private registry", () => {
+    const repo = createFixtureCopy("mcp-registry");
+    const capture = createCapture();
+    const code = runCli(["mcp-registry", repo, "--out", ".agent-reliability/mcp-audit"], capture.io);
+    const report = JSON.parse(fs.readFileSync(path.join(repo, ".agent-reliability", "mcp-audit", "mcp-registry-report.json"), "utf8")) as {
+      status: string;
+      findings: Array<{ id: string }>;
+    };
+
+    expect(code).toBe(1);
+    expect(report.status).toBe("fail");
+    expect(report.findings.map((finding) => finding.id)).toContain("mcp.server.disabled");
+    expect(report.findings.map((finding) => finding.id)).toContain("mcp.server.not-allowlisted");
+    expect(report.findings.map((finding) => finding.id)).toContain("mcp.url.not-approved");
+  });
+
+  it("writes n8n-only reports and redacted workflow backups", () => {
+    const repo = createFixtureCopy("n8n-risk");
+    const scanCapture = createCapture();
+    const scanCode = runCli(["n8n-scan", repo, "--out", ".agent-reliability/n8n", "--format", "json", "--stdout", "--min-score", "0"], scanCapture.io);
+    const scanReport = JSON.parse(scanCapture.stdout.join("\n")) as { findings: Array<{ scanner: string; id: string }> };
+
+    expect(scanCode).toBe(1);
+    expect(scanReport.findings.every((finding) => finding.scanner === "n8n-safety")).toBe(true);
+    expect(scanReport.findings.map((finding) => finding.id)).toContain("n8n.command-execution-node");
+
+    const backupCapture = createCapture();
+    const backupCode = runCli(["n8n-backup", repo, "--backup-dir", ".agent-reliability/n8n-backup"], backupCapture.io);
+    const backupFile = path.join(repo, ".agent-reliability", "n8n-backup", "workflows__risky.json");
+
+    expect(backupCode).toBe(0);
+    expect(fs.existsSync(backupFile)).toBe(true);
+    expect(fs.readFileSync(backupFile, "utf8")).toContain("[redacted]");
+  });
+
+  it("summarizes AI trace costs and fails over budget", () => {
+    const repo = createFixtureCopy("cost-trace");
+    const capture = createCapture();
+    const code = runCli(["cost-report", repo, "--budget-usd", "0.50", "--out", ".agent-reliability/cost"], capture.io);
+    const report = JSON.parse(fs.readFileSync(path.join(repo, ".agent-reliability", "cost", "cost-report.json"), "utf8")) as {
+      status: string;
+      total: { costUsd: number; totalTokens: number };
+      byModel: Array<{ provider: string }>;
+    };
+
+    expect(code).toBe(1);
+    expect(report.status).toBe("warn");
+    expect(report.total.costUsd).toBe(1);
+    expect(report.total.totalTokens).toBe(4500);
+    expect(report.byModel.map((bucket) => bucket.provider)).toContain("openai");
+  });
 });
