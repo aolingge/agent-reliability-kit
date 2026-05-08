@@ -63,6 +63,7 @@ AI coding agents fail most often on the unglamorous parts: missing repo rules, u
 | Secrets | token-like values, tracked `.env` files, redacted evidence |
 | GitHub Actions | validation commands, explicit permissions, risky triggers, pipe-to-shell |
 | AI tooling | MCP command configs and prompt-injection-like instruction files |
+| Runbooks | debugging, verification, rollback, and reporting evidence |
 | MCP registry | private allowlist, trust score, approved commands/URLs, risk owner |
 | n8n | public webhooks, command nodes, risky code nodes, workflow secrets, redacted backups |
 | Team layer | scan history, policy gates, audit report, dry-run Slack payload |

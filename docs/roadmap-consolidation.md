@@ -25,7 +25,9 @@ ark cost-report
 | `mcp-config-doctor` | `ark mcp-registry` and future `ark mcp doctor` |
 | `ai-pr-risk-labeler` | future `ark pr verify` |
 | `agent-run-trace-pack` | `ark cost-report` and future `ark trace run` |
+| `agent-runbook-check` | `ark scan` runbook scanner |
 | `agent-hardening-kit` | umbrella positioning and docs merged into `ark scan` |
+| `prompt-yaml-lint` | `ark prompt-lint` |
 | n8n tools | `ark n8n-scan` and `ark n8n-backup` |
 
 ## Rule

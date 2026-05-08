@@ -31,6 +31,28 @@ describe("scanRepository", () => {
     expect(report.findings.map((finding) => finding.id)).toContain("release.package-json.missing");
   });
 
+  it("detects missing operational runbook steps", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-runbook-risk-"));
+    fs.writeFileSync(path.join(temp, "README.md"), "# Runbook Risk\n\nRun `npm test` to verify changes.\n", "utf8");
+    fs.writeFileSync(path.join(temp, "package.json"), JSON.stringify({
+      name: "runbook-risk",
+      version: "1.0.0",
+      license: "MIT",
+      scripts: {
+        test: "node -e \"console.log('ok')\"",
+        build: "node -e \"console.log('ok')\""
+      }
+    }, null, 2), "utf8");
+
+    const report = scanRepository(temp);
+    const finding = report.findings.find((item) => item.id === "runbook.missing-operational-steps");
+
+    expect(finding?.scanner).toBe("runbook");
+    expect(finding?.next).toContain("debug");
+    expect(finding?.next).toContain("rollback");
+    expect(finding?.next).toContain("report");
+  });
+
   it("redacts and reports synthetic token-like values across report formats", () => {
     const report = scanRepository(path.join(fixtures, "secret-risk"));
     expect(report.summary.critical).toBeGreaterThan(0);

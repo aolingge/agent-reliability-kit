@@ -8,12 +8,13 @@ import { scoreFindings } from "./core/scoring.js";
 import { initProject } from "./init/initProject.js";
 import { runMcpRegistryAudit, writeMcpRegistryReport } from "./mcp/registry.js";
 import { backupN8nWorkflows } from "./n8n/backup.js";
+import { formatPromptLintReport, lintPromptYamlFile } from "./prompt/promptYamlLint.js";
 import { renderReport, writeReports } from "./report/write.js";
 import { runTeamAudit } from "./team/teamAudit.js";
 import type { Report, ReportFormat, ScanOptions } from "./types.js";
 
 const VALID_FORMATS = new Set<ReportFormat>(["text", "markdown", "json", "html", "sarif", "annotations"]);
-const COMMANDS = new Set(["scan", "doctor", "init", "team-audit", "mcp-registry", "n8n-scan", "n8n-backup", "cost-report", "help", "version"]);
+const COMMANDS = new Set(["scan", "doctor", "init", "team-audit", "mcp-registry", "n8n-scan", "n8n-backup", "cost-report", "prompt-lint", "help", "version"]);
 const OPTION_NAMES = new Set([
   "--out",
   "--format",
@@ -34,7 +35,7 @@ const OPTION_NAMES = new Set([
 ]);
 
 interface ParsedArgs {
-  command: "scan" | "doctor" | "init" | "team-audit" | "mcp-registry" | "n8n-scan" | "n8n-backup" | "cost-report" | "help" | "version";
+  command: "scan" | "doctor" | "init" | "team-audit" | "mcp-registry" | "n8n-scan" | "n8n-backup" | "cost-report" | "prompt-lint" | "help" | "version";
   path: string;
   outDir: string;
   formats: ReportFormat[];
@@ -168,6 +169,7 @@ function validateCommandOptions(args: ParsedArgs): void {
     "n8n-scan": new Set(["--out", "--format", "--min-score", "--stdout"]),
     "n8n-backup": new Set(["--backup-dir"]),
     "cost-report": new Set(["--trace", "--budget-usd", "--out"]),
+    "prompt-lint": new Set(["--format", "--min-score", "--stdout"]),
     help: new Set<string>(),
     version: new Set<string>()
   }[args.command];
@@ -202,6 +204,7 @@ Usage:
   agent-reliability-kit n8n-scan [path] [--out DIR] [--format LIST] [--stdout]
   agent-reliability-kit n8n-backup [path] [--backup-dir DIR]
   agent-reliability-kit cost-report [path] [--trace FILE_OR_DIR] [--budget-usd N] [--out DIR]
+  agent-reliability-kit prompt-lint FILE [--format FORMAT] [--min-score N]
   agent-reliability-kit --help
   agent-reliability-kit --version
 
@@ -213,6 +216,7 @@ Aliases:
   ark mcp-registry .
   ark n8n-scan .
   ark cost-report . --budget-usd 10
+  ark prompt-lint review.prompt.yml --format markdown
 
 Commands:
   scan      Write local reliability reports and print a concise summary
@@ -223,6 +227,7 @@ Commands:
   n8n-scan       Run the n8n safety scanner and write n8n-only reports
   n8n-backup     Write redacted, Git-friendly backups of n8n workflow JSON
   cost-report    Summarize local AI trace token/cost events and budget alerts
+  prompt-lint    Score prompt-as-code YAML files for review readiness
 
 Options:
   --out DIR        scan only; default .agent-reliability inside the requested repository
@@ -237,6 +242,7 @@ Options:
   --backup-dir DIR n8n-backup only; default .agent-reliability/n8n-backup
   --trace FILE_OR_DIR   cost-report only; default .agent-reliability/traces
   --budget-usd N   cost-report only; warn when parsed cost exceeds this budget
+  --format FORMAT  prompt-lint uses the first format and prints to stdout
   -h, --help       show help
   -v, --version    print version
 
@@ -306,6 +312,12 @@ function runInit(root: string, force: boolean, io: CliIo): number {
     for (const file of result.skipped) io.stdout(`- ${file}`);
   }
   return 0;
+}
+
+function runPromptLint(file: string, formats: ReportFormat[], minScore: number, io: CliIo): number {
+  const report = lintPromptYamlFile(file);
+  io.stdout(formatPromptLintReport(report, formats[0] ?? "text"));
+  return report.score >= minScore ? 0 : 1;
 }
 
 export function runCli(argv: string[], io: CliIo = { stdout: console.log, stderr: console.error, cwd: process.cwd() }): number {
@@ -385,6 +397,7 @@ export function runCli(argv: string[], io: CliIo = { stdout: console.log, stderr
       for (const file of written) io.stdout(`- ${path.relative(io.cwd, file).replaceAll("\\", "/")}`);
       return report.status === "pass" ? 0 : 1;
     }
+    if (args.command === "prompt-lint") return runPromptLint(root, args.formats, args.minScore, io);
     return 0;
   } catch (error) {
     io.stderr(`agent-reliability-kit: ${(error as Error).message}`);

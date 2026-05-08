@@ -9,6 +9,7 @@ import { scanGithubActions } from "../scanners/githubActions.js";
 import { scanN8nWorkflows } from "../scanners/n8n.js";
 import { scanReadme } from "../scanners/readme.js";
 import { scanReleaseReadiness } from "../scanners/releaseReadiness.js";
+import { scanRunbook } from "../scanners/runbook.js";
 import { scanSecrets } from "../scanners/secrets.js";
 import type { Report, ScanContext, ScannerResult } from "../types.js";
 
@@ -17,6 +18,7 @@ export const VERSION = "0.1.0";
 const scanners = [
   scanAgentInstructions,
   scanCommands,
+  scanRunbook,
   scanReadme,
   scanReleaseReadiness,
   scanSecrets,

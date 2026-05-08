@@ -37,7 +37,9 @@ describe("runCli", () => {
     expect(output).toContain("agent-reliability-kit scan [path]");
     expect(output).toContain("agent-reliability-kit doctor [path]");
     expect(output).toContain("agent-reliability-kit init [path] [--force]");
+    expect(output).toContain("agent-reliability-kit prompt-lint FILE");
     expect(output).toContain("ark scan .");
+    expect(output).toContain("ark prompt-lint review.prompt.yml");
     expect(output).toContain("--out DIR");
     expect(output).toContain("default .agent-reliability");
     expect(output).toContain("--stdout");
@@ -171,5 +173,31 @@ describe("runCli", () => {
     expect(report.total.costUsd).toBe(1);
     expect(report.total.totalTokens).toBe(4500);
     expect(report.byModel.map((bucket) => bucket.provider)).toContain("openai");
+  });
+
+  it("scores prompt YAML files through the consolidated prompt-lint command", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-prompt-lint-"));
+    const promptFile = path.join(temp, "review.prompt.yml");
+    fs.writeFileSync(promptFile, [
+      "name: pr-review",
+      "description: Review a pull request for bugs and missing tests.",
+      "model: gpt-5.2",
+      "inputs:",
+      "  diff:",
+      "    description: Pull request diff",
+      "prompt: |",
+      "  Review the diff and report actionable issues.",
+      "tests:",
+      "  - name: flags missing test",
+      "    expected: Mentions missing coverage."
+    ].join("\n"), "utf8");
+
+    const capture = createCapture();
+    const code = runCli(["prompt-lint", promptFile, "--format", "json", "--min-score", "80"], capture.io);
+    const report = JSON.parse(capture.stdout.join("\n")) as { score: number; results: Array<{ check: string; status: string }> };
+
+    expect(code).toBe(0);
+    expect(report.score).toBe(100);
+    expect(report.results.find((result) => result.check === "prompt-body")?.status).toBe("PASS");
   });
 });
