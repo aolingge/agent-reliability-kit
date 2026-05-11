@@ -11,6 +11,8 @@ import { scanReadme } from "../scanners/readme.js";
 import { scanReleaseReadiness } from "../scanners/releaseReadiness.js";
 import { scanRunbook } from "../scanners/runbook.js";
 import { scanSecrets } from "../scanners/secrets.js";
+import { scanMemoryRules } from "../scanners/memoryRules.js";
+import { scanShellSafety } from "../scanners/shellSafety.js";
 import type { Report, ScanContext, ScannerResult } from "../types.js";
 
 export const VERSION = "0.1.0";
@@ -21,7 +23,9 @@ const scanners = [
   scanRunbook,
   scanReadme,
   scanReleaseReadiness,
+  scanShellSafety,
   scanSecrets,
+  scanMemoryRules,
   scanGithubActions,
   scanAiAgentRisk,
   scanN8nWorkflows
