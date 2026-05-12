@@ -38,8 +38,10 @@ describe("runCli", () => {
     expect(output).toContain("agent-reliability-kit doctor [path]");
     expect(output).toContain("agent-reliability-kit init [path] [--force]");
     expect(output).toContain("agent-reliability-kit prompt-lint FILE");
+    expect(output).toContain("agent-reliability-kit text-audit FILE_OR_DIR");
     expect(output).toContain("ark scan .");
     expect(output).toContain("ark prompt-lint review.prompt.yml");
+    expect(output).toContain("ark text-audit AGENTS.md");
     expect(output).toContain("--out DIR");
     expect(output).toContain("default .agent-reliability");
     expect(output).toContain("--stdout");
@@ -199,5 +201,29 @@ describe("runCli", () => {
     expect(code).toBe(0);
     expect(report.score).toBe(100);
     expect(report.results.find((result) => result.check === "prompt-body")?.status).toBe("PASS");
+  });
+
+  it("runs consolidated text-audit profiles from retired small CLI tools", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-text-audit-"));
+    const agentsFile = path.join(temp, "AGENTS.md");
+    fs.writeFileSync(agentsFile, [
+      "# AGENTS.md",
+      "Purpose: AI coding agent instructions for Codex and Claude.",
+      "Read order: AGENTS.md, README, package.json.",
+      "Run `npm test` and `npm run build` before finishing.",
+      "Do not edit secrets, cookies, tokens, or private logs.",
+      "Check git status before committing.",
+      "Project layout: src, tests, docs.",
+      "Report verified evidence."
+    ].join("\n"), "utf8");
+
+    const capture = createCapture();
+    const code = runCli(["text-audit", agentsFile, "--profile", "agents-md", "--format", "json", "--min-score", "80"], capture.io);
+    const report = JSON.parse(capture.stdout.join("\n")) as { score: number; sourceRepo: string; results: Array<{ check: string; status: string }> };
+
+    expect(code).toBe(0);
+    expect(report.sourceRepo).toBe("agents-md-doctor");
+    expect(report.score).toBeGreaterThanOrEqual(80);
+    expect(report.results.find((result) => result.check === "purpose")?.status).toBe("PASS");
   });
 });

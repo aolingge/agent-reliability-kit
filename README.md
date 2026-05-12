@@ -39,6 +39,7 @@ ark mcp-registry . --registry .agent-reliability/mcp-registry.json
 ark n8n-scan . --out .agent-reliability/n8n
 ark n8n-backup . --backup-dir .agent-reliability/n8n-backup
 ark cost-report . --trace .agent-reliability/traces --budget-usd 10
+ark text-audit AGENTS.md --profile agents-md --format markdown
 ```
 
 The scan writes:
@@ -70,6 +71,7 @@ AI coding agents fail most often on the unglamorous parts: missing repo rules, u
 | n8n | public webhooks, command nodes, risky code nodes, workflow secrets, redacted backups |
 | Team layer | scan history, policy gates, audit report, dry-run Slack payload |
 | Cost guard | local trace token/cost summary and budget alerts |
+| Text audit profiles | focused checks from retired small CLI tools, including AGENTS.md, PR briefs, task scopes, MCP READMEs, Skill files, changelogs, Windows paths, and repo onboarding notes |
 
 ## CLI
 
@@ -82,6 +84,7 @@ agent-reliability-kit mcp-registry [path]
 agent-reliability-kit n8n-scan [path]
 agent-reliability-kit n8n-backup [path]
 agent-reliability-kit cost-report [path]
+agent-reliability-kit text-audit FILE_OR_DIR --profile NAME
 ```
 
 Examples:
@@ -95,6 +98,8 @@ ark team-audit .
 ark mcp-registry .
 ark n8n-scan .
 ark cost-report . --budget-usd 10
+ark text-audit AGENTS.md --profile agents-md --format markdown
+ark text-audit . --profile mcp-readme --format json
 ```
 
 Machine-readable stdout stays clean for CI:
@@ -115,6 +120,7 @@ The HTML report is designed for maintainers, contributors, and launch pages. It 
 - [Private MCP registry](docs/private-mcp-registry.md): team allowlist with trust score, approved commands/URLs, permissions, owner, and reason.
 - [n8n safety and backup](docs/n8n-safety-backup.md): risky workflow scanning and redacted Git-friendly backups.
 - [AI cost guard](docs/ai-cost-guard.md): local trace cost summaries and budget alerts.
+- Text audit profiles: consolidated compatibility profiles from small single-purpose tools such as `agents-md-doctor`, `agent-ci-doctor`, `mcp-readme-score`, `skill-md-lint`, and related repo/PR/task checks.
 - [Commercial support path](docs/commercial-support.md): open-source boundary and future paid team features.
 - [Consolidation roadmap](docs/roadmap-consolidation.md): how small tools roll into the flagship CLI.
 

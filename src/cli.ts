@@ -10,11 +10,12 @@ import { runMcpRegistryAudit, writeMcpRegistryReport } from "./mcp/registry.js";
 import { backupN8nWorkflows } from "./n8n/backup.js";
 import { formatPromptLintReport, lintPromptYamlFile } from "./prompt/promptYamlLint.js";
 import { renderReport, writeReports } from "./report/write.js";
+import { formatTextAuditReport, listTextAuditProfiles, runTextAudit } from "./text/textAudit.js";
 import { runTeamAudit } from "./team/teamAudit.js";
 import type { Report, ReportFormat, ScanOptions } from "./types.js";
 
 const VALID_FORMATS = new Set<ReportFormat>(["text", "markdown", "json", "html", "sarif", "annotations"]);
-const COMMANDS = new Set(["scan", "doctor", "init", "team-audit", "mcp-registry", "n8n-scan", "n8n-backup", "cost-report", "prompt-lint", "help", "version"]);
+const COMMANDS = new Set(["scan", "doctor", "init", "team-audit", "mcp-registry", "n8n-scan", "n8n-backup", "cost-report", "prompt-lint", "text-audit", "help", "version"]);
 const OPTION_NAMES = new Set([
   "--out",
   "--format",
@@ -28,6 +29,9 @@ const OPTION_NAMES = new Set([
   "--backup-dir",
   "--trace",
   "--budget-usd",
+  "--profile",
+  "--redact",
+  "--list-profiles",
   "--help",
   "-h",
   "--version",
@@ -35,13 +39,15 @@ const OPTION_NAMES = new Set([
 ]);
 
 interface ParsedArgs {
-  command: "scan" | "doctor" | "init" | "team-audit" | "mcp-registry" | "n8n-scan" | "n8n-backup" | "cost-report" | "prompt-lint" | "help" | "version";
+  command: "scan" | "doctor" | "init" | "team-audit" | "mcp-registry" | "n8n-scan" | "n8n-backup" | "cost-report" | "prompt-lint" | "text-audit" | "help" | "version";
   path: string;
   outDir: string;
   formats: ReportFormat[];
   minScore: number;
   stdout: boolean;
   force: boolean;
+  redact: boolean;
+  listProfiles: boolean;
   policyPath?: string;
   slackPayloadPath?: string;
   registryPath?: string;
@@ -49,6 +55,7 @@ interface ParsedArgs {
   backupDir?: string;
   tracePath?: string;
   budgetUsd?: number;
+  profile?: string;
   usedOptions: Set<string>;
 }
 
@@ -67,6 +74,8 @@ function parseArgs(argv: string[]): ParsedArgs {
     minScore: 80,
     stdout: false,
     force: false,
+    redact: false,
+    listProfiles: false,
     usedOptions: new Set<string>()
   };
 
@@ -96,6 +105,16 @@ function parseArgs(argv: string[]): ParsedArgs {
     } else if (item === "--force") {
       args.usedOptions.add(item);
       args.force = true;
+    } else if (item === "--redact") {
+      args.usedOptions.add(item);
+      args.redact = true;
+    } else if (item === "--list-profiles") {
+      args.usedOptions.add(item);
+      args.listProfiles = true;
+    } else if (item === "--profile") {
+      args.usedOptions.add(item);
+      args.profile = takeOptionValue(argv, index, item);
+      index += 1;
     } else if (item === "--policy") {
       args.usedOptions.add(item);
       args.policyPath = takeOptionValue(argv, index, item);
@@ -170,6 +189,7 @@ function validateCommandOptions(args: ParsedArgs): void {
     "n8n-backup": new Set(["--backup-dir"]),
     "cost-report": new Set(["--trace", "--budget-usd", "--out"]),
     "prompt-lint": new Set(["--format", "--min-score", "--stdout"]),
+    "text-audit": new Set(["--profile", "--format", "--min-score", "--redact", "--list-profiles"]),
     help: new Set<string>(),
     version: new Set<string>()
   }[args.command];
@@ -205,6 +225,7 @@ Usage:
   agent-reliability-kit n8n-backup [path] [--backup-dir DIR]
   agent-reliability-kit cost-report [path] [--trace FILE_OR_DIR] [--budget-usd N] [--out DIR]
   agent-reliability-kit prompt-lint FILE [--format FORMAT] [--min-score N]
+  agent-reliability-kit text-audit FILE_OR_DIR --profile NAME [--format FORMAT] [--min-score N]
   agent-reliability-kit --help
   agent-reliability-kit --version
 
@@ -217,6 +238,7 @@ Aliases:
   ark n8n-scan .
   ark cost-report . --budget-usd 10
   ark prompt-lint review.prompt.yml --format markdown
+  ark text-audit AGENTS.md --profile agents-md --format markdown
 
 Commands:
   scan      Write local reliability reports and print a concise summary
@@ -228,6 +250,7 @@ Commands:
   n8n-backup     Write redacted, Git-friendly backups of n8n workflow JSON
   cost-report    Summarize local AI trace token/cost events and budget alerts
   prompt-lint    Score prompt-as-code YAML files for review readiness
+  text-audit     Run consolidated text/profile checks from retired small CLI repos
 
 Options:
   --out DIR        scan only; default .agent-reliability inside the requested repository
@@ -243,6 +266,9 @@ Options:
   --trace FILE_OR_DIR   cost-report only; default .agent-reliability/traces
   --budget-usd N   cost-report only; warn when parsed cost exceeds this budget
   --format FORMAT  prompt-lint uses the first format and prints to stdout
+  --profile NAME   text-audit only; run one of the consolidated profiles
+  --list-profiles  text-audit only; list available profiles
+  --redact         text-audit only; print redacted input instead of the report
   -h, --help       show help
   -v, --version    print version
 
@@ -317,6 +343,17 @@ function runInit(root: string, force: boolean, io: CliIo): number {
 function runPromptLint(file: string, formats: ReportFormat[], minScore: number, io: CliIo): number {
   const report = lintPromptYamlFile(file);
   io.stdout(formatPromptLintReport(report, formats[0] ?? "text"));
+  return report.score >= minScore ? 0 : 1;
+}
+
+function runTextAuditCommand(target: string, profile: string | undefined, formats: ReportFormat[], minScore: number, redact: boolean, listProfiles: boolean, io: CliIo): number {
+  if (listProfiles) {
+    for (const item of listTextAuditProfiles()) io.stdout(item);
+    return 0;
+  }
+  if (!profile) throw new Error("--profile is required for text-audit");
+  const report = runTextAudit(target, profile);
+  io.stdout(redact ? report.redacted : formatTextAuditReport(report, formats[0] ?? "text"));
   return report.score >= minScore ? 0 : 1;
 }
 
@@ -398,6 +435,7 @@ export function runCli(argv: string[], io: CliIo = { stdout: console.log, stderr
       return report.status === "pass" ? 0 : 1;
     }
     if (args.command === "prompt-lint") return runPromptLint(root, args.formats, args.minScore, io);
+    if (args.command === "text-audit") return runTextAuditCommand(root, args.profile, args.formats, args.minScore, args.redact, args.listProfiles, io);
     return 0;
   } catch (error) {
     io.stderr(`agent-reliability-kit: ${(error as Error).message}`);
