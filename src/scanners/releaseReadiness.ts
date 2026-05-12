@@ -1,8 +1,14 @@
-import { hasFile, readRootText } from "../core/files.js";
+import { findFiles, hasFile, readRootText, readTextFile } from "../core/files.js";
 import type { Finding, ScanContext, ScannerResult } from "../types.js";
 
 const REQUIRED_PACKAGE_FIELDS = ["name", "version", "description", "license"] as const;
 const EXPECTED_REPORT_OUTPUTS = ["report.md", "report.json", "report.html"] as const;
+const RELEASE_NOTE_SIGNALS = [
+  { id: "changes", label: "changes", pattern: /changed|added|fixed|removed|security|breaking|改动|新增|修复|移除/i },
+  { id: "verification", label: "verification", pattern: /test|build|lint|typecheck|verified|verification|验证|测试|检查|构建/i },
+  { id: "version", label: "version", pattern: /\bv?\d+\.\d+\.\d+\b|version|release|版本/i },
+  { id: "targets", label: "publication targets", pattern: /github|gitee|npm|pypi|release|tag|pages|docker|镜像|发布|标签/i }
+] as const;
 
 export function scanReleaseReadiness(context: ScanContext): ScannerResult {
   const findings: Finding[] = [];
@@ -68,6 +74,24 @@ export function scanReleaseReadiness(context: ScanContext): ScannerResult {
     }
   }
 
+  const releaseNoteFiles = findFiles(context.files, /(^|\/)(?:CHANGELOG|RELEASE|RELEASE_NOTES|release-notes)\.md$|(^|\/)docs\/.*release.*\.md$/i);
+  for (const file of releaseNoteFiles) {
+    const text = readTextFile(file);
+    if (!text) continue;
+    const missing = RELEASE_NOTE_SIGNALS.filter((signal) => !signal.pattern.test(text));
+    if (missing.length < 2) continue;
+    findings.push({
+      id: "release.note-missing-proof",
+      title: "Release note lacks proof signals",
+      severity: "low",
+      scanner: "release-readiness",
+      file: file.relativePath,
+      evidence: `Missing: ${missing.map((signal) => signal.label).join(", ")}`,
+      why: "Release notes should prove what changed, how it was verified, and where the result was published.",
+      next: "Add changes, verification commands or results, a version or release identifier, and target surfaces such as GitHub, npm, or release tags."
+    });
+  }
+
   return {
     findings,
     facts: {
@@ -75,7 +99,8 @@ export function scanReleaseReadiness(context: ScanContext): ScannerResult {
       packageVersion,
       documentedReportOutputs: readme
         ? EXPECTED_REPORT_OUTPUTS.filter((output) => readme.toLowerCase().includes(output))
-        : []
+        : [],
+      releaseNoteFiles: releaseNoteFiles.map((file) => file.relativePath)
     }
   };
 }

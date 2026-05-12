@@ -53,6 +53,74 @@ describe("scanRepository", () => {
     expect(finding?.next).toContain("report");
   });
 
+  it("detects unguarded destructive shell commands", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-shell-safety-"));
+    fs.writeFileSync(path.join(temp, "README.md"), "# Shell Safety\n\nRun `rm -rf dist` before packaging.\n", "utf8");
+    fs.writeFileSync(path.join(temp, "package.json"), JSON.stringify({
+      name: "shell-safety",
+      version: "1.0.0",
+      description: "fixture",
+      license: "MIT",
+      scripts: {
+        test: "node -e \"console.log('ok')\"",
+        build: "node -e \"console.log('ok')\""
+      }
+    }, null, 2), "utf8");
+
+    const report = scanRepository(temp);
+    const finding = report.findings.find((item) => item.id === "shell-safety.rm-rf.unguarded");
+
+    expect(finding?.scanner).toBe("shell-safety");
+    expect(finding?.file).toBe("README.md");
+    expect(finding?.next).toContain("dry-run");
+  });
+
+  it("checks memory rule files for reusable rule structure", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-memory-rules-"));
+    fs.writeFileSync(path.join(temp, "shared-memory.md"), "# Shared Memory\n\nAlways run the check.\n", "utf8");
+    fs.writeFileSync(path.join(temp, "package.json"), JSON.stringify({
+      name: "memory-rules",
+      version: "1.0.0",
+      description: "fixture",
+      license: "MIT",
+      scripts: {
+        test: "node -e \"console.log('ok')\"",
+        build: "node -e \"console.log('ok')\""
+      }
+    }, null, 2), "utf8");
+
+    const report = scanRepository(temp);
+    const finding = report.findings.find((item) => item.id === "memory-rules.incomplete-contract");
+
+    expect(finding?.scanner).toBe("memory-rules");
+    expect(finding?.evidence).toContain("trigger");
+    expect(finding?.evidence).toContain("secret boundary");
+  });
+
+  it("checks release notes for change and verification proof", () => {
+    const temp = fs.mkdtempSync(path.join(os.tmpdir(), "ark-release-note-"));
+    fs.writeFileSync(path.join(temp, "CHANGELOG.md"), "# Changelog\n\nInitial public note.\n", "utf8");
+    fs.writeFileSync(path.join(temp, "README.md"), "# Release Note Fixture\n\nInstall with npm.\n\nRun tests.\n\nLicense: MIT.\n\nContributing welcome.\n\nreport.md report.json report.html\n", "utf8");
+    fs.writeFileSync(path.join(temp, "package.json"), JSON.stringify({
+      name: "release-note-fixture",
+      version: "1.0.0",
+      description: "fixture",
+      license: "MIT",
+      scripts: {
+        test: "node -e \"console.log('ok')\"",
+        build: "node -e \"console.log('ok')\""
+      }
+    }, null, 2), "utf8");
+
+    const report = scanRepository(temp);
+    const finding = report.findings.find((item) => item.id === "release.note-missing-proof");
+
+    expect(finding?.scanner).toBe("release-readiness");
+    expect(finding?.file).toBe("CHANGELOG.md");
+    expect(finding?.evidence).toContain("changes");
+    expect(finding?.evidence).toContain("verification");
+  });
+
   it("redacts and reports synthetic token-like values across report formats", () => {
     const report = scanRepository(path.join(fixtures, "secret-risk"));
     expect(report.summary.critical).toBeGreaterThan(0);
