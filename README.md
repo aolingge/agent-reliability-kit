@@ -1,4 +1,4 @@
-![Agent Reliability Kit](assets/readme-banner.svg)
+![Agent Reliability Kit](https://raw.githubusercontent.com/aolingge/aolingge/main/assets/developer-cover.png)
 
 # Agent Reliability Kit
 
@@ -12,6 +12,15 @@ Verify, harden, and ship AI-agent-assisted codebases in one command.
 Agent Reliability Kit scans a repository the way a careful maintainer would before letting AI coding agents work there: agent instructions, verification commands, README quality, secret hygiene, GitHub Actions safety, MCP/tooling risk, n8n workflow exports, team policy, and release readiness.
 
 The flagship path is simple: keep `agent-secret-guard` as the sharp security wedge, and use `agent-reliability-kit` as the one command center for agent-era repository reliability.
+
+## Project guide
+
+| Area | Details |
+| --- | --- |
+| **For** | Maintainers using coding agents who want a reviewable overview of repository readiness. |
+| **Workflow** | Scan a repository, read findings by area, then fix the gaps in instructions, verification, CI and tooling. |
+| **Output** | Markdown, JSON and HTML reports; SARIF output is also available. |
+| **Start** | [Quick start](#quick-start) · [Check coverage](#what-it-checks) · [Documentation](https://aolingge.github.io/agent-reliability-kit/) |
 
 ## Quick Start
 
