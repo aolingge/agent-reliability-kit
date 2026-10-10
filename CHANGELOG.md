@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add an exact-head dependency/Action review guide and replace stale maintenance and pre-release response placeholders with usable public documentation.
+
 ## 0.1.0
 
 - Added the first productized CLI: `scan`, `doctor`, and `init`.
