@@ -4,9 +4,9 @@ This backlog tracks public repository governance work that is safe to discuss in
 
 ## Current Governance Queue
 
-- Review Dependabot PR #6 for `@types/node` patch updates. Current required check `verify` is passing, but merging remains a maintainer action.
-- Keep issue #5 open as the public v0.1.0 feedback collection point until launch feedback has been triaged into concrete issues.
-- Keep main branch protection active with required PR review, stale review dismissal, strict status checks, and the `verify` required check.
+- Review current dependency proposals using the [dependency review guide](docs/dependency-review.md); recheck exact-head CI rather than relying on old PR numbers or green checks.
+- Triage public feedback into reproducible findings, expected behavior and focused fixes before changing issue state.
+- Recheck branch protection and required checks before a merge; record the current state instead of treating this backlog as a live configuration report.
 
 ## Launch Hygiene
 
@@ -16,5 +16,5 @@ This backlog tracks public repository governance work that is safe to discuss in
 
 ## Later
 
-- Add a short Dependabot review checklist for patch, minor, and major dependency updates.
-- Add a release checklist that links launch copy, distribution notes, smoke output, and npm package metadata.
+- Keep the dependency guide aligned with runtime engines, Action runner requirements and current maintainer rules.
+- Use the existing [release readiness](docs/release-readiness.md) and [distribution checklist](docs/launch/distribution-checklist.md); verify package metadata and links before a separately authorized release.

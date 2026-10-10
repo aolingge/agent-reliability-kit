@@ -151,6 +151,7 @@ The repository includes a launch kit so maintainers can prepare public posts, de
 - [Community responses](docs/launch/community-responses.md)
 - [Channel rules](docs/launch/channel-rules.md)
 - [Distribution checklist](docs/launch/distribution-checklist.md)
+- [Dependency and Action review](docs/dependency-review.md)
 - [Demo GIF script](docs/launch/demo-gif-script.md)
 - [Product Hunt draft](docs/launch/product-hunt.md)
 - [DEV article draft](docs/launch/devto-article.md)

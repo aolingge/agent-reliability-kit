@@ -6,9 +6,9 @@ Agent Reliability Kit is a local-first CLI that checks whether a repository is r
 
 Links:
 
-- <PUBLIC_REPO_URL>
-- <NPM_PACKAGE_URL>
-- <DOCS_URL>
+- [Public repository](https://github.com/aolingge/agent-reliability-kit)
+- [npm package](https://www.npmjs.com/package/agent-reliability-kit)
+- [Documentation](https://aolingge.github.io/agent-reliability-kit/)
 
 ## Is this another AI coding agent?
 
@@ -38,7 +38,7 @@ No. It makes repo readiness issues visible and repeatable. It does not guarantee
 
 Yes, that is one intended workflow. The CLI writes human-readable and machine-readable outputs so maintainers can use it before PRs, in CI, or during release preparation.
 
-Example after public package availability:
+Example using the public package:
 
 ```bash
 npx agent-reliability-kit scan . --min-score 85
@@ -58,23 +58,11 @@ MCP and local toolchains can expand what an agent can do. The scanner looks for 
 
 ## Is the npm package available?
 
-Use the current launch state. If <NPM_PACKAGE_URL> is not live yet, say:
-
-> The project is in pre-release local mode. The `npx` path will be the public install path once the npm package is published.
-
-If <NPM_PACKAGE_URL> is live, use:
-
-> The npm package is available here: <NPM_PACKAGE_URL>
+Yes. The package is available on [npm](https://www.npmjs.com/package/agent-reliability-kit). Check the registry version before quoting a version number; installation instructions are in the [README](../../README.md#quick-start).
 
 ## Is the GitHub repo public?
 
-Use the current launch state. If <PUBLIC_REPO_URL> is not live yet, say:
-
-> The public repository link will be shared when the launch surface is ready.
-
-If <PUBLIC_REPO_URL> is live, use:
-
-> The public repository is here: <PUBLIC_REPO_URL>
+Yes. The source, public fixtures and contributor instructions are in the [GitHub repository](https://github.com/aolingge/agent-reliability-kit). These response examples are drafts for maintainers to adapt; no message is sent automatically.
 
 ## How should I report a false positive?
 
