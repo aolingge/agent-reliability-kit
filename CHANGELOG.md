@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Count nested snake_case usage tokens, support case-insensitive JSONL exports and UTF-8 BOMs, and warn when malformed JSON records leave partial cost totals.
 - Add an exact-head dependency/Action review guide and replace stale maintenance and pre-release response placeholders with usable public documentation.
 
 ## 0.1.0

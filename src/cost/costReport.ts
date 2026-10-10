@@ -42,7 +42,9 @@ export interface CostReport {
 export function buildCostReport(options: CostReportOptions): CostReport {
   const root = resolveRoot(options.root);
   const traceFiles = resolveTraceFiles(root, options.tracePath);
-  const events = traceFiles.flatMap((file) => readCostEvents(file));
+  const parsedFiles = traceFiles.map((file) => readCostEvents(file));
+  const events = parsedFiles.flatMap((parsed) => parsed.events);
+  const malformedRecords = parsedFiles.reduce((count, parsed) => count + parsed.malformedRecords, 0);
   const byModel = summarizeByModel(events);
   const total = byModel.reduce<Omit<CostBucket, "provider" | "model">>((acc, bucket) => ({
     calls: acc.calls + bucket.calls,
@@ -55,6 +57,7 @@ export function buildCostReport(options: CostReportOptions): CostReport {
 
   if (traceFiles.length === 0) alerts.push("No trace files found. Pass --trace or write JSON/JSONL traces under .agent-reliability/traces.");
   if (events.length === 0 && traceFiles.length > 0) alerts.push("Trace files were found, but no token or cost events could be parsed.");
+  if (malformedRecords > 0) alerts.push(`Skipped ${malformedRecords} malformed JSON record(s); totals may be incomplete. Repair the trace input and rerun.`);
   if (options.budgetUsd !== undefined && total.costUsd > options.budgetUsd) {
     alerts.push(`Cost ${formatMoney(total.costUsd)} is above budget ${formatMoney(options.budgetUsd)}.`);
   }
@@ -131,12 +134,24 @@ function resolveTraceFiles(root: string, tracePath?: string): string[] {
   return files;
 }
 
-function readCostEvents(file: string): CostEvent[] {
-  const text = fs.readFileSync(file, "utf8");
-  const records = file.endsWith(".jsonl")
-    ? text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).map(parseJson)
-    : [parseJson(text)];
-  return records.flatMap((record) => normalizeRecord(record)).filter((event): event is CostEvent => event !== null);
+function readCostEvents(file: string): { events: CostEvent[]; malformedRecords: number } {
+  const text = fs.readFileSync(file, "utf8").replace(/^\uFEFF/, "");
+  const records = path.extname(file).toLowerCase() === ".jsonl"
+    ? text.split(/\r?\n/).map((line) => line.trim()).filter(Boolean)
+    : [text];
+  const events: CostEvent[] = [];
+  let malformedRecords = 0;
+  for (const record of records) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(record) as unknown;
+    } catch {
+      malformedRecords += 1;
+      continue;
+    }
+    for (const event of normalizeRecord(parsed)) events.push(event);
+  }
+  return { events, malformedRecords };
 }
 
 function normalizeRecord(record: unknown): CostEvent[] {
@@ -149,9 +164,9 @@ function normalizeRecord(record: unknown): CostEvent[] {
   const usage = typeof item.usage === "object" && item.usage !== null ? item.usage as Record<string, unknown> : {};
   const provider = stringField(item.provider) ?? stringField(item.modelProvider) ?? "unknown";
   const model = stringField(item.model) ?? stringField(item.modelName) ?? "unknown";
-  const inputTokens = numberField(item.inputTokens) ?? numberField(item.input_tokens) ?? numberField(item.prompt_tokens) ?? numberField(usage.inputTokens) ?? numberField(usage.prompt_tokens) ?? 0;
-  const outputTokens = numberField(item.outputTokens) ?? numberField(item.output_tokens) ?? numberField(item.completion_tokens) ?? numberField(usage.outputTokens) ?? numberField(usage.completion_tokens) ?? 0;
-  const totalTokens = numberField(item.totalTokens) ?? numberField(item.total_tokens) ?? numberField(usage.totalTokens) ?? inputTokens + outputTokens;
+  const inputTokens = numberField(item.inputTokens) ?? numberField(item.input_tokens) ?? numberField(item.prompt_tokens) ?? numberField(usage.inputTokens) ?? numberField(usage.input_tokens) ?? numberField(usage.prompt_tokens) ?? 0;
+  const outputTokens = numberField(item.outputTokens) ?? numberField(item.output_tokens) ?? numberField(item.completion_tokens) ?? numberField(usage.outputTokens) ?? numberField(usage.output_tokens) ?? numberField(usage.completion_tokens) ?? 0;
+  const totalTokens = numberField(item.totalTokens) ?? numberField(item.total_tokens) ?? numberField(usage.totalTokens) ?? numberField(usage.total_tokens) ?? inputTokens + outputTokens;
   const costUsd = numberField(item.costUsd) ?? numberField(item.cost_usd) ?? numberField(item.usd) ?? 0;
 
   if (inputTokens + outputTokens + totalTokens + costUsd === 0) return [];
@@ -179,14 +194,6 @@ function summarizeByModel(events: CostEvent[]): CostBucket[] {
     buckets.set(key, current);
   }
   return [...buckets.values()].sort((left, right) => right.costUsd - left.costUsd);
-}
-
-function parseJson(text: string): unknown {
-  try {
-    return JSON.parse(text) as unknown;
-  } catch {
-    return null;
-  }
 }
 
 function numberField(value: unknown): number | undefined {
