@@ -18,6 +18,8 @@ ark n8n-backup . --backup-dir .agent-reliability/n8n-backup
 
 `n8n-backup` writes formatted workflow JSON into a Git-friendly directory and redacts token-like values first.
 
+The resolved output directory is excluded from source discovery, including custom destinations, so repeated runs do not back up their own generated files. Output must not be the source repository root or its ancestor, including directory aliases. Paths are flattened using `__` for compatibility; if two source paths would produce the same backup filename, the command stops before writing any backup files. Names are compared without case on every platform, including the reserved `README.md` and `backup-report.json`, so backups remain portable to case-insensitive filesystems. This also rejects otherwise distinct names differing only in case on a case-sensitive filesystem. Choose distinct source filenames and retry. Previously generated files for the same source may still be refreshed on later runs; unrelated stale files are not deleted.
+
 The command writes:
 
 - redacted workflow JSON files

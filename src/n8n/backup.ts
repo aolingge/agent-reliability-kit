@@ -22,16 +22,31 @@ export interface N8nBackupReport {
 
 export function backupN8nWorkflows(options: N8nBackupOptions): N8nBackupReport {
   const root = resolveRoot(options.root);
-  const backupDir = path.isAbsolute(options.backupDir) ? options.backupDir : path.join(root, options.backupDir);
+  const backupDir = path.resolve(root, options.backupDir);
   const files = [];
+  const physicalRoot = fs.realpathSync(root);
+  const physicalOutput = resolvePhysicalPath(backupDir);
+  if (isInside(physicalOutput, physicalRoot)) throw new Error("Backup output must not be the repository root or its ancestor.");
+  const candidates = [];
+  // Portable backups must also be safe on case-insensitive macOS volumes.
+  const destinationKey = (target: string): string => target.toLowerCase();
+  const destinations = new Set(["README.md", "backup-report.json"].map((name) => destinationKey(path.join(backupDir, name))));
 
-  fs.mkdirSync(backupDir, { recursive: true });
   for (const file of listRepoFiles(root)) {
+    if (isInside(physicalOutput, path.resolve(physicalRoot, file.relativePath))) continue;
     const text = readTextFile(file);
     if (!text || !looksLikeN8nWorkflow(text, file.relativePath)) continue;
     const redactedText = redactSecretLikeText(text);
     const parsed = parseJson(redactedText);
     const target = path.join(backupDir, file.relativePath.replaceAll("/", "__"));
+    const key = destinationKey(target);
+    if (destinations.has(key)) throw new Error("Workflow backup filenames collide after path flattening. Rename the source paths and retry.");
+    destinations.add(key);
+    candidates.push({ file, text, redactedText, parsed, target });
+  }
+
+  fs.mkdirSync(backupDir, { recursive: true });
+  for (const { file, text, redactedText, parsed, target } of candidates) {
     fs.writeFileSync(target, parsed ? `${JSON.stringify(parsed, null, 2)}\n` : redactedText, "utf8");
     files.push({
       source: file.relativePath,
@@ -59,6 +74,18 @@ export function backupN8nWorkflows(options: N8nBackupOptions): N8nBackupReport {
   };
   fs.writeFileSync(path.join(backupDir, "backup-report.json"), JSON.stringify(report, null, 2), "utf8");
   return report;
+}
+
+function isInside(directory: string, candidate: string): boolean {
+  const relative = path.relative(directory, candidate);
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
+}
+
+function resolvePhysicalPath(directory: string): string {
+  if (fs.existsSync(directory)) return fs.realpathSync(directory);
+  const parent = path.dirname(directory);
+  if (parent === directory) throw new Error("Backup destination parent is unavailable.");
+  return path.join(resolvePhysicalPath(parent), path.basename(directory));
 }
 
 function parseJson(text: string): unknown | null {
