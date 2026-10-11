@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Make prompt-lint and text-audit HTML reports readable on mobile screens, wrapping long paths and table content; identify the text-audit document language.
+
 ## 0.1.0
 
 - Added the first productized CLI: `scan`, `doctor`, and `init`.

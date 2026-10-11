@@ -382,7 +382,15 @@ ${rows}
 
 function formatHtml(report: TextAuditReport): string {
   const rows = report.results.map((item) => `<tr><td>${escapeHtml(item.status)}</td><td>${escapeHtml(item.check)}</td><td>${escapeHtml(item.message)}</td></tr>`).join("");
-  return `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(report.title)} Report</title></head><body><h1>${escapeHtml(report.title)} Report</h1><p>Score: ${report.score}/100</p><p>Profile: ${escapeHtml(report.profile)}</p><table><thead><tr><th>Status</th><th>Check</th><th>Message</th></tr></thead><tbody>${rows}</tbody></table></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(report.title)} Report</title>
+<style>
+* { box-sizing: border-box; }
+body { max-width: 960px; margin: 0 auto; padding: 24px; font: 16px/1.5 system-ui, sans-serif; overflow-wrap: anywhere; }
+h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+th, td { text-align: left; vertical-align: top; padding: 8px; border: 1px solid #d6dde8; }
+th:first-child { width: 5.5rem; } th:nth-child(2) { width: 24%; }
+</style></head><body><main><h1>${escapeHtml(report.title)} Report</h1><p>Score: ${report.score}/100</p><p>Profile: ${escapeHtml(report.profile)}</p><table><thead><tr><th>Status</th><th>Check</th><th>Message</th></tr></thead><tbody>${rows}</tbody></table></main></body></html>`;
 }
 
 function formatAnnotations(report: TextAuditReport): string {
