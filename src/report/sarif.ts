@@ -1,4 +1,5 @@
 import type { Report } from "../types.js";
+import { artifactUri } from "./artifactUri.js";
 
 export function formatSarif(report: Report): object {
   const rules = Array.from(new Map(report.findings.map((finding) => [
@@ -37,7 +38,7 @@ export function formatSarif(report: Report): object {
             ? [
                 {
                   physicalLocation: {
-                    artifactLocation: { uri: finding.file },
+                    artifactLocation: { uri: artifactUri(finding.file) },
                     region: { startLine: finding.line ?? 1 }
                   }
                 }

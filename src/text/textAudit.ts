@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { artifactUri } from "../report/artifactUri.js";
 import type { ReportFormat } from "../types.js";
 
 interface TextAuditCheck {
@@ -417,7 +418,7 @@ function formatSarif(report: TextAuditReport): unknown {
             locations: [
               {
                 physicalLocation: {
-                  artifactLocation: { uri: report.target.replaceAll("\\", "/") },
+                  artifactLocation: { uri: artifactUri(report.target) },
                   region: { startLine: 1 }
                 }
               }

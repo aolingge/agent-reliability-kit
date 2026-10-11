@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Encode SARIF file locations correctly for repository-relative and native absolute paths, including Unicode, spaces, percent signs and URI delimiters, across scan, prompt-lint and text-audit reports.
+
 ## 0.1.0
 
 - Added the first productized CLI: `scan`, `doctor`, and `init`.
