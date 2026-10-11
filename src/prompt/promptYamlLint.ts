@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { artifactUri } from "../report/artifactUri.js";
 import type { ReportFormat } from "../types.js";
 
 interface PromptCheck {
@@ -179,7 +180,7 @@ function formatPromptSarif(report: PromptLintReport): object {
             locations: [
               {
                 physicalLocation: {
-                  artifactLocation: { uri: report.file }
+                  artifactLocation: { uri: artifactUri(report.file) }
                 }
               }
             ]
