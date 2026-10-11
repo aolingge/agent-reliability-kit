@@ -253,10 +253,10 @@ Commands:
   text-audit     Run consolidated text/profile checks from retired small CLI repos
 
 Options:
-  --out DIR        scan only; default .agent-reliability inside the requested repository
-  --format LIST    scan only; comma-separated: text, markdown, json, html, sarif, annotations
-  --min-score N    scan only; fail when score is below N, default 80, range 0-100
-  --stdout         scan only; print the first requested format to stdout instead of text
+  --out DIR        scan, n8n-scan, team-audit, mcp-registry, cost-report; default .agent-reliability
+  --format LIST    scan, n8n-scan, prompt-lint, text-audit; comma-separated formats listed below
+  --min-score N    scan, n8n-scan, prompt-lint, text-audit; fail below N, default 80, range 0-100
+  --stdout         scan, n8n-scan, prompt-lint; print the first requested format (prompt-lint always does)
   --force          init only; overwrite existing starter files
   --policy FILE    team-audit only; default .agent-reliability/team-policy.json
   --slack-payload FILE  team-audit only; write a Slack payload without sending it
@@ -265,7 +265,6 @@ Options:
   --backup-dir DIR n8n-backup only; default .agent-reliability/n8n-backup
   --trace FILE_OR_DIR   cost-report only; default .agent-reliability/traces
   --budget-usd N   cost-report only; warn when parsed cost exceeds this budget
-  --format FORMAT  prompt-lint uses the first format and prints to stdout
   --profile NAME   text-audit only; run one of the consolidated profiles
   --list-profiles  text-audit only; list available profiles
   --redact         text-audit only; print redacted input instead of the report
@@ -274,6 +273,7 @@ Options:
 
 Formats:
   text, markdown, json, html, sarif, annotations
+  prompt-lint and text-audit always print the first requested format to stdout.
 
 Safety:
   Local-only by default. Commands write reports and dry-run payloads only; they never send Slack webhooks, publish packages, or push releases.
