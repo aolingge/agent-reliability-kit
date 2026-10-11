@@ -193,8 +193,16 @@ function formatPromptHtml(report: PromptLintReport): string {
   const rows = report.results.map((result) => `<tr><td>${escapeHtml(result.status)}</td><td>${escapeHtml(result.check)}</td><td>${escapeHtml(result.message)}</td></tr>`).join("");
   return `<!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><title>Prompt YAML Lint Report</title></head>
-<body>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Prompt YAML Lint Report</title>
+<style>
+* { box-sizing: border-box; }
+body { max-width: 960px; margin: 0 auto; padding: 24px; font: 16px/1.5 system-ui, sans-serif; overflow-wrap: anywhere; }
+h1 { font-size: clamp(1.5rem, 5vw, 2rem); }
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+th, td { text-align: left; vertical-align: top; padding: 8px; border: 1px solid #d6dde8; }
+th:first-child { width: 5.5rem; } th:nth-child(2) { width: 24%; }
+</style></head>
+<body><main>
 <h1>Prompt YAML Lint Report</h1>
 <p>Score: <strong>${report.score}/100</strong></p>
 <p>File: <code>${escapeHtml(report.file)}</code></p>
@@ -202,7 +210,7 @@ function formatPromptHtml(report: PromptLintReport): string {
 <thead><tr><th>Status</th><th>Check</th><th>Message</th></tr></thead>
 <tbody>${rows}</tbody>
 </table>
-</body>
+</main></body>
 </html>`;
 }
 
